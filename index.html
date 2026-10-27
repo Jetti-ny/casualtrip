@@ -545,6 +545,20 @@ const RECORDS = [
     note: '5분이 별거 아닌 것 같은데 아침이 훨씬 덜 허둥지둥해요.',
     tip: '알람을 5분만 당기세요. 10분은 실패해요.', tags: ['편하게 살고 싶을 때', '건강 챙길 때'] },
 
+  // 인생 스포당해봤어요: 사주가 말한 나
+  //   verdict는 good(소름) / meh(반반) / bad(땡) / pending(판정 대기), note = 실제로는 어떤지
+  { type: 'saju', src: '일간 신금', title: '작은 보석 같은 사람이래요. 섬세하고, 은근 자존심이 세대요', verdict: 'pending', note: '', tags: [] },
+  { type: 'saju', src: '편인 둘', title: '생각이 너무 많대요. 대신 남들이 못 보는 걸 보는 촉이 있대요', verdict: 'pending', note: '', tags: [] },
+  { type: 'saju', src: '식신 둘', title: '먹는 것, 만드는 것, 표현하는 걸 좋아하는 아이가 안에 산대요', verdict: 'pending', note: '', tags: [] },
+  { type: 'saju', src: '편인과 식신', title: '하고 싶은 게 떠올라도 생각이 많아서 시작 전에 멈칫한대요', verdict: 'pending', note: '', tags: [] },
+  { type: 'saju', src: '정재 둘', title: '돈은 한 방보다 차곡차곡 모으는 타입이래요', verdict: 'pending', note: '', tags: [] },
+  { type: 'saju', src: '비겁 없음', title: '도움을 잘 안 청하고 혼자 해내려는 타입이래요', verdict: 'pending', note: '', tags: [] },
+  { type: 'saju', src: '자오충', title: '마음속에서 "쉬고 싶다"와 "해야 한다"가 자주 부딪힌대요', verdict: 'pending', note: '', tags: [] },
+  { type: 'saju', src: '한겨울의 신금', title: '추운 계절의 보석이라 따뜻한 사람과 햇볕이 필요하대요', verdict: 'pending', note: '', tags: [] },
+  { type: 'saju', src: '궁합', title: '태양 같은 병화(丙) 일간과 잘 맞는대요', verdict: 'pending', note: '', tags: [],
+    // more와 extra는 펼쳐보기를 눌러야 보여요
+    more: '특히 병오일주와는 하늘도 땅도 합인 천지합이래요',
+    extra: [['찰떡', '병오일주 · 병화 일간'], ['보너스', '2026년이 마침 병오년이에요']] },
 ];
 
 // 멋대로 시상해봤어요: S(1등) / A(2등) / B(3등) / C(참가상)
@@ -566,6 +580,23 @@ const TIERS = [
     { tier: 'C', name: '뜨거운 음료 모든 것', why: '차라리 얼어 죽는 편을 택할게요' } ] },
 ];
 
+// 인생 스포 머리 부분 (생년월일이 드러나지 않게 원국 여덟 글자는 넣지 않았어요)
+const SAJU = {
+  hero: { hanja: '辛', name: '신금', nick: '작은 보석',
+    desc: '한겨울 물 기운 속에서 태어난 보석이래요. 물에 씻길수록 반짝이지만, 따뜻한 볕이 꼭 필요하대요.' },
+  // p = 비중(%). 천간 10점씩, 지지는 속에 숨은 기운(지장간) 비율대로 나누고, 태어난 달(월지)은 계절 기운이라 30점으로 계산
+  elements: [
+    { k: '목', h: '木', p: 22, c: 'mint' }, { k: '화', h: '火', p: 13, c: 'pink' },
+    { k: '토', h: '土', p: 15, c: 'butter' }, { k: '금', h: '金', p: 10, c: 'lilac', me: true },
+    { k: '수', h: '水', p: 40, c: 'sky' } ],
+  elementsNote: '태어난 달이 한겨울 물의 달이라 계절 기운에 가중치를 주고, 글자 속에 숨은 기운까지 나눠 계산했어요. 물이 40%로 제일 세고, 금은 주인공 혼자라 10%예요.',
+  cast: [
+    { role: '식신', n: 2, nick: '회전목마', job: '먹고 놀고 표현하는 즐거움 담당. 물 기운 40%라 늘 붐벼요' },
+    { role: '정재', n: 2, nick: '매표소', job: '현실 감각, 계획, 차곡차곡 모으기 담당' },
+    { role: '편인', n: 2, nick: '거울 미로', job: '생각이 꼬리를 무는 곳. 직관과 공상 담당' },
+    { role: '편관', n: 1, nick: '자이로드롭', job: '책임감과 버티는 힘 담당. 주로 인생 후반에 개장' },
+    { role: '비겁', n: 0, nick: '2인승 범퍼카', job: '운행 중지. 그래서 혼자 타는 장면이 많대요' } ],
+};
 // 오늘 일진이 일간에게 어떤 기운인지에 따라 바뀌는 운행 안내 (순서: 비겁, 식상, 재성, 관성, 인성)
 const TODAY_G = [
   { who: '2인승 범퍼카', what: '친구와 동료 기운이 들어오는 날이래요.', tip: '친구한테 먼저 연락해보기.' },
@@ -593,7 +624,7 @@ RECORDS.forEach((r, i) => {
   r.no = String(seq[r.type]).padStart(3, '0');
   r.id = 'rec' + String(i + 1).padStart(3, '0');
 });
-const countOf = k => k === 'tier' ? TIERS.length : k === 'saju' ? exampleReading().notes.length : RECORDS.filter(r => r.type === k).length;
+const countOf = k => k === 'tier' ? TIERS.length : RECORDS.filter(r => r.type === k).length;
 
 const state = { view: 'gate', tag: null, likedOnly: false, sajuMode: 'example', guest: null };
 let liked = new Set();
@@ -890,54 +921,49 @@ function todayFor(me, groupN) {
     msg: groupN[g] === 0 ? '평소엔 운행 중지인데 오늘은 임시 운행이래요. ' + t.tip : t.what + ' ' + t.tip };
 }
 
-// 사주에서 쪽지와 놀이기구를 만드는 데 필요한 사실만 뽑아요 (원국 글자 자체는 이후에 안 써요)
-function factsFrom(P, A) {
-  const stems = [P.y[0], P.m[0], P.d[0]].concat(P.h ? [P.h[0]] : []);
-  const brs = [P.y[1], P.m[1], P.d[1]].concat(P.h ? [P.h[1]] : []);
-  const meets = [];
-  const clash = brs.find(b => brs.includes(mod(b + 6, 12)));
-  if (clash != null) { const [a1, a2] = [clash, mod(clash + 6, 12)].sort((x, z) => x - z); meets.push([BR_K[a1] + BR_K[a2] + '충', 'clash']); }
-  const bh = brs.find(b => brs.includes(mod(1 - b, 12)) && mod(1 - b, 12) !== b);
-  if (bh != null) { const [a1, a2] = [bh, mod(1 - bh, 12)].sort((x, z) => x - z); meets.push([BR_K[a1] + BR_K[a2] + '합', 'brHap']); }
-  const sh = stems.find(x => stems.includes(mod(x + 5, 10)));
-  if (sh != null) { const [a1, a2] = [sh, mod(sh + 5, 10)].sort((x, z) => x - z); meets.push([STEM_K[a1] + STEM_K[a2] + '합', 'stHap']); }
-  return { me: A.me, dayBranch: P.d[1], monthBranch: P.m[1], pct: A.pct, gods: A.gods, groupN: A.groupN, meets };
-}
-const MEET_TEXT = {
-  clash: '마음속에서 서로 다른 두 목소리가 자주 부딪힌대요. 대신 변화에는 강하대요',
-  brHap: '주변 사람과 잘 어울리고 한번 맺은 인연이 오래간대요',
-  stHap: '마음이 끌리는 쪽으로 잘 묶이는 편이래요. 정이 많대요' };
-const MANY = { 비견: '나와 닮은 사람들과 함께할 때 힘이 난대요', 겁재: '승부욕이 있어서 지는 걸 싫어한대요',
-  식신: '먹는 것, 만드는 것, 표현하는 걸 좋아하는 아이가 안에 산대요', 상관: '말솜씨와 재치가 좋아서 분위기를 잘 띄운대요',
-  편재: '스케일이 크고 사람을 잘 모은대요', 정재: '돈은 한 방보다 차곡차곡 모으는 타입이래요',
-  편관: '압박 속에서 오히려 강해지는 타입이래요', 정관: '규칙과 약속을 잘 지키는 반듯한 타입이래요',
-  편인: '생각이 너무 많대요. 대신 남들이 못 보는 걸 보는 촉이 있대요', 정인: '배우는 걸 좋아하고 사람들에게 아낌받는대요' };
-const NUM = ['', '하나', '둘', '셋', '넷', '다섯', '여섯', '일곱'];
-
-// 예시(운영자)와 손님 모두 이 함수 하나로 화면 내용을 만들어요
-function buildReading(F, meta) {
-  const me = F.me, info = STEM_INFO[me], sea = seasonOf(F.monthBranch), S = SEASON[sea];
-  const elements = EL.map((e, i) => ({ ...e, p: F.pct[i], me: i === stemEl(me) }));
-  const maxI = F.pct.indexOf(Math.max(...F.pct));
-  const self = F.pct[stemEl(me)] + F.pct[mod(stemEl(me) - 1, 5)];
+function guestReading(g) {
+  const [y, m, d] = g.date.split('-').map(Number);
+  const [hh, mm] = g.noTime ? [null, null] : g.time.split(':').map(Number);
+  const P = calcPillars(y, m, d, hh, mm), A = analyze(P), me = A.me, info = STEM_INFO[me];
+  const sea = seasonOf(P.m[1]), S = SEASON[sea];
+  const elements = EL.map((e, i) => ({ ...e, p: A.pct[i], me: i === stemEl(me) }));
+  const maxI = A.pct.indexOf(Math.max(...A.pct));
+  const self = A.pct[stemEl(me)] + A.pct[mod(stemEl(me) - 1, 5)];
   const strong = self >= 50;
   const notes = [];
-  const add = (src, title, more) => notes.push({ id: meta.idp + (notes.length + 1), no: String(notes.length + 1).padStart(3, '0'), src, title, verdict: 'pending', ...more });
+  const add = (src, title, more) => notes.push({ id: 'g' + (notes.length + 1), no: String(notes.length + 1).padStart(3, '0'), src, title, verdict: 'pending', ...more });
   add('일간 ' + stemName(me), info.line);
-  add(`제일 센 기운 · ${EL[maxI].k} ${F.pct[maxI]}%`, STRONG[relGroup(me, maxI)]);
-  const miss = [0, 1, 2, 3, 4].find(i => F.groupN[i] === 0);
+  add(`제일 센 기운 · ${EL[maxI].k} ${A.pct[maxI]}%`, STRONG[relGroup(me, maxI)]);
+  const miss = [0, 1, 2, 3, 4].find(i => A.groupN[i] === 0);
   if (miss != null) add(GROUP[miss] + ' 없음', MISSING[miss]);
   else {
-    const minI = F.pct.indexOf(Math.min(...F.pct));
-    add(`제일 약한 기운 · ${EL[minI].k} ${F.pct[minI]}%`, `다섯 기운이 고루 있는 편이래요. 그중 ${EL[minI].k} 기운을 조금 채워주면 좋대요`);
+    const minI = A.pct.indexOf(Math.min(...A.pct));
+    add(`제일 약한 기운 · ${EL[minI].k} ${A.pct[minI]}%`, `다섯 기운이 고루 있는 편이래요. 그중 ${EL[minI].k} 기운을 조금 채워주면 좋대요`);
   }
   add(`${strong ? '신강' : '신약'} · 내 편 기운 ${self}%`, strong
     ? '기운이 튼튼해서 밀고 나가는 힘이 있대요. 대신 쉬는 법을 배워야 한대요'
     : '혼자 버티기보다 좋은 사람과 환경을 곁에 두면 더 빛난대요');
   add(S.src, S.line);
   // 여기부터는 사주 안의 조합이 있을 때만 붙는 쪽지예요. 조합이 많을수록 늘어나고, 궁합 포함 최대 9장
-  const G = F.gods, N = F.groupN, has = t => (G[t] || 0) > 0;
-  const combo = [], many = [], meet = F.meets.map(([src, k]) => [src, MEET_TEXT[k]]);
+  const G = A.gods, N = A.groupN, has = t => (G[t] || 0) > 0;
+  const stems = [P.y[0], P.m[0], P.d[0]].concat(P.h ? [P.h[0]] : []);
+  const brs = [P.y[1], P.m[1], P.d[1]].concat(P.h ? [P.h[1]] : []);
+  const meet = [], combo = [], many = [];
+  const clash = brs.find(b => brs.includes(mod(b + 6, 12)));
+  if (clash != null) {
+    const [a1, a2] = [clash, mod(clash + 6, 12)].sort((x, z) => x - z);
+    meet.push([BR_K[a1] + BR_K[a2] + '충', '마음속에서 서로 다른 두 목소리가 자주 부딪힌대요. 대신 변화에는 강하대요']);
+  }
+  const bh = brs.find(b => brs.includes(mod(1 - b, 12)) && mod(1 - b, 12) !== b);
+  if (bh != null) {
+    const [a1, a2] = [bh, mod(1 - bh, 12)].sort((x, z) => x - z);
+    meet.push([BR_K[a1] + BR_K[a2] + '합', '주변 사람과 잘 어울리고 한번 맺은 인연이 오래간대요']);
+  }
+  const sh = stems.find(x => stems.includes(mod(x + 5, 10)));
+  if (sh != null) {
+    const [a1, a2] = [sh, mod(sh + 5, 10)].sort((x, z) => x - z);
+    meet.push([STEM_K[a1] + STEM_K[a2] + '합', '마음이 끌리는 쪽으로 잘 묶이는 편이래요. 정이 많대요']);
+  }
   if (has('편인') && has('식신')) combo.push(['편인과 식신', '하고 싶은 게 떠올라도 생각이 많아서 시작 전에 멈칫한대요']);
   else if (N[4] && N[1]) combo.push(['인성과 식상', '배운 걸 내 말로 풀어내는 걸 잘한대요']);
   if (N[1] && N[2]) combo.push(['식상과 재성', '재주가 돈으로 이어지는 구조래요. 좋아하는 걸 일로 만들기 좋대요']);
@@ -945,61 +971,59 @@ function buildReading(F, meta) {
   if (N[2] && N[3]) combo.push(['재성과 관성', '현실 감각과 책임감이 같이 있어서 믿음직하대요']);
   if (has('상관') && has('정관')) combo.push(['상관과 정관', '할 말은 하는 편이라 윗사람과 부딪힐 때가 있대요']);
   if (N[0] >= 2 && N[2]) combo.push(['비겁과 재성', '사람 챙기느라 지갑이 자주 열린대요']);
+  const MANY = { 비견: '나와 닮은 사람들과 함께할 때 힘이 난대요', 겁재: '승부욕이 있어서 지는 걸 싫어한대요',
+    식신: '먹는 것, 만드는 것, 표현하는 걸 좋아하는 아이가 안에 산대요', 상관: '말솜씨와 재치가 좋아서 분위기를 잘 띄운대요',
+    편재: '스케일이 크고 사람을 잘 모은대요', 정재: '돈은 한 방보다 차곡차곡 모으는 타입이래요',
+    편관: '압박 속에서 오히려 강해지는 타입이래요', 정관: '규칙과 약속을 잘 지키는 반듯한 타입이래요',
+    편인: '생각이 너무 많대요. 대신 남들이 못 보는 걸 보는 촉이 있대요', 정인: '배우는 걸 좋아하고 사람들에게 아낌받는대요' };
+  const NUM = ['', '하나', '둘', '셋', '넷', '다섯', '여섯', '일곱'];
   Object.keys(G).filter(t => G[t] >= 2).sort((x, z) => G[z] - G[x]).forEach(t => many.push([`${t} ${NUM[G[t]] || G[t]}`, MANY[t]]));
-  const pools = [many, combo, meet];   // 세 묶음에서 번갈아 하나씩 골라 다양하게
+  // 세 묶음에서 번갈아 하나씩 골라 다양하게
+  const pools = [many, combo, meet];
   for (let round = 0; notes.length < 8 && pools.some(q => q.length); round++) {
     const q = pools[round % 3];
     if (q.length) { const [src, title] = q.shift(); add(src, title); }
   }
-  const ps = mod(me + 5, 10), pb = mod(1 - F.dayBranch, 12), pill = STEM_K[ps] + BR_K[pb];
+  const ps = mod(me + 5, 10), pb = mod(1 - P.d[1], 12), pill = STEM_K[ps] + BR_K[pb];
   const now = new Date().getFullYear();
   let Y = now; while (mod(Y - 4, 10) !== ps || mod(Y - 4, 12) !== pb) Y++;
   add('궁합', `${STEM_INFO[ps].nick} 같은 ${stemName(ps)}(${STEM_H[ps]}) 일간과 잘 맞는대요`, {
     more: `특히 ${pill}일주와는 하늘도 땅도 합인 천지합이래요`,
     extra: [['찰떡', `${pill}일주 · ${stemName(ps)} 일간`], ['보너스', Y === now ? `${Y}년이 마침 ${pill}년이에요` : `다음 찰떡의 해는 ${Y}년, ${pill}년이래요`]] });
-  const cast = [1, 2, 4, 3, 0].map(gi => {
-    const n = F.groupN[gi], R = RIDES[gi];
-    const label = n ? TEN[gi].filter(t => G[t]).map(t => `${t} ${G[t]}`).join(' · ') : GROUP[gi] + ' × 0';
+  const castOrder = [1, 2, 4, 3, 0];
+  const cast = castOrder.map(gi => {
+    const n = A.groupN[gi], R = RIDES[gi];
+    const label = n ? TEN[gi].filter(t => A.gods[t]).map(t => `${t} ${A.gods[t]}`).join(' · ') : GROUP[gi] + ' × 0';
     return { label, nick: R.nick, job: n ? R.job + (n >= 3 ? '. 늘 붐벼요' : '') : R.off, empty: !n };
   });
+  const when = `${y}년 ${m}월 ${d}일${g.noTime ? '' : ' ' + g.time}`;
   return {
-    mode: meta.mode, label: meta.label, viewing: meta.viewing, pillars: meta.pillars || null,
+    mode: 'guest', label: '손님의 자유이용권', viewing: `${when}에 태어난 손님의 사주예요${g.noTime ? ' · 시간 모름' : ''}`,
     hero: { hanja: STEM_H[me], name: stemName(me), nick: info.nick,
       desc: `${S.hero} ${info.nick}${hasBatchim(info.nick) ? '이' : ''}래요. ${strong ? '기운이 튼튼한 편이래요.' : '주변 기운이 큰 편이래요.'}` },
-    elements, today: todayFor(me, F.groupN), cast, notes, chem: meta.mode === 'guest' ? chemistry(F) : null,
-    elementsNote: `태어난 달이 ${sea}의 ${BR_K[F.monthBranch]}월이라 계절 기운에 가중치를 주고, 글자 속에 숨은 기운까지 나눠 계산했어요. ${EL[maxI].k} 기운이 ${F.pct[maxI]}%로 제일 세요.` +
-      (meta.noTime ? ' 태어난 시간을 몰라서 세 기둥으로만 계산했어요.' : ''),
+    pillars: [['시', P.h], ['일', P.d], ['월', P.m], ['년', P.y]],
+    elements, today: todayFor(me, A.groupN), cast, notes, chem: chemistry(P, A),
+    elementsNote: `태어난 달이 ${sea}의 ${BR_K[P.m[1]]}월이라 계절 기운에 가중치를 주고, 글자 속에 숨은 기운까지 나눠 계산했어요. ${EL[maxI].k} 기운이 ${A.pct[maxI]}%로 제일 세요.` +
+      (g.noTime ? ' 태어난 시간을 몰라서 세 기둥으로만 계산했어요.' : ''),
   };
 }
 
-function guestReading(g) {
-  const [y, m, d] = g.date.split('-').map(Number);
-  const [hh, mm] = g.noTime ? [null, null] : g.time.split(':').map(Number);
-  const P = calcPillars(y, m, d, hh, mm);
-  const when = `${y}년 ${m}월 ${d}일${g.noTime ? '' : ' ' + g.time}`;
-  return buildReading(factsFrom(P, analyze(P)), {
-    mode: 'guest', idp: 'g', label: '손님의 자유이용권', noTime: g.noTime,
-    viewing: `${when}에 태어난 손님의 사주예요${g.noTime ? ' · 시간 모름' : ''}`,
-    pillars: [['시', P.h], ['일', P.d], ['월', P.m], ['년', P.y]] });
+function exampleReading() {
+  return {
+    mode: 'example', label: '자유이용권 소지자', viewing: '예시 · 이 놀이공원 운영자의 사주예요',
+    hero: SAJU.hero, pillars: null, elements: SAJU.elements, elementsNote: SAJU.elementsNote,
+    today: todayFor(7, [0, 2, 2, 1, 2]),
+    cast: SAJU.cast.map(c => ({ label: `${c.role} × ${c.n}`, nick: c.nick, job: c.job, empty: !c.n })),
+    notes: RECORDS.filter(r => r.type === 'saju'),
+  };
 }
 
-// 운영자 사주: 공개 저장소라 원국 여덟 글자와 생년월일은 넣지 않고, 계산이 끝난 결과만 넣었어요
-const OP_FACTS = {
-  me: 7, dayBranch: 7, monthBranch: 0,            // 신금 일간, 미토 일지, 자월(한겨울) 생
-  pct: [22, 13, 15, 10, 40],                      // 목 화 토 금 수 (%)
-  gods: { 식신: 2, 정재: 2, 편인: 2, 편관: 1 },
-  groupN: [0, 2, 2, 1, 2],                        // 비겁 식상 재성 관성 인성
-  meets: [['자오충', 'clash'], ['오미합', 'brHap']],
-};
-function exampleReading() {
-  return buildReading(OP_FACTS, { mode: 'example', idp: 'ex', label: '자유이용권 소지자', viewing: '예시 · 이 놀이공원 운영자의 사주예요' });
-}
 
 /* ── 운영자와의 케미 궁합 (성별 없이 보는 사람 대 사람 궁합) ──
    운영자 사주는 여덟 글자를 통째로 넣지 않고, 궁합에 필요한 것만 넣었어요 */
-const OP = { stem: OP_FACTS.me, branch: OP_FACTS.dayBranch, pct: OP_FACTS.pct };
-function chemistry(F) {
-  const g = F.me, gb = F.dayBranch, A = F, reasons = [];
+const OP = { stem: 7, branch: 7, pct: [22, 13, 15, 10, 40] }; // 신금 일간, 미토 일지, 오행 비중
+function chemistry(P, A) {
+  const g = P.d[0], gb = P.d[1], reasons = [];
   let score = 3;
   const push = (pt, text) => { score += pt; reasons.push({ pt, text }); };
   const ge = stemEl(g), oe = stemEl(OP.stem);
