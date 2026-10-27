@@ -1,0 +1,1264 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="작은 놀이공원이 문을 열었어요. 질러보고, 규칙대로 살아보고, 멋대로 시상하고, 인생 스포까지 당해본 일상 기록.">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font: 14px system-ui, sans-serif; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>소소한 생활 여행</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Gowun+Dodum&family=Jua&family=Noto+Serif+KR:wght@700&display=swap">
+<style>
+/* Layout: 입구(티켓) → 놀이공원 지도(코너 = 놀이기구) → 코너 상세. 솜사탕 파스텔 위 스티커 카드, 인생 스포만 밤의 놀이공원 */
+:root {
+  --bg: #F7F3FF;
+  --glass: rgba(247, 243, 255, .9);
+  --dot: rgba(143, 107, 255, .10);
+  --blob-a: rgba(255, 196, 222, .55);
+  --blob-b: rgba(190, 240, 220, .55);
+  --blob-c: rgba(201, 220, 255, .60);
+  --blob-d: rgba(255, 236, 170, .50);
+  --card: #FFFFFF;
+  --ink: #3A2E4D;
+  --muted: #7A6E8C;
+  --accent: #8C68F5;
+  --accent-soft: #ECE4FF;
+  --good: #23927A;
+  --meh: #D17A22;
+  --bad: #DD4C76;
+  --tip: #FFF3C4;
+  --tip-ink: #6A5110;
+  --pink: #FFC6DD;
+  --mint: #B9EDD6;
+  --sky: #C7DAFF;
+  --butter: #FFE79E;
+  --lilac: #DCCAFF;
+  --ground: #E9F7EF;
+  --path: #FFF6DC;
+  --path-line: #E7C979;
+  --night: #2E2A5C;
+  --night-2: #3B3670;
+  --night-line: rgba(255, 255, 255, .16);
+  --night-ink: #F6F1FF;
+  --night-muted: #C7BDEA;
+  --star: rgba(255, 255, 255, .5);
+  --gold: #FFE08A;
+  --f-serif: "Noto Serif KR", "AppleMyungjo", "Batang", serif;
+  --f-display: "Jua", "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --f-body: "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --f-hand: "Gaegu", "Gowun Dodum", "Apple SD Gothic Neo", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1D1929; --glass: rgba(29, 25, 41, .9); --dot: rgba(184, 156, 255, .10);
+    --blob-a: rgba(160, 70, 120, .30); --blob-b: rgba(60, 140, 115, .28); --blob-c: rgba(80, 105, 190, .30); --blob-d: rgba(150, 125, 50, .22);
+    --card: #29233D; --ink: #F1EBFF; --muted: #B3A8C8; --accent: #B79BFF; --accent-soft: #3A3160;
+    --good: #7FE0C5; --meh: #FFBE78; --bad: #FF93B1; --tip: #3A3320; --tip-ink: #FFE6A0;
+    --pink: #6B3C5E; --mint: #2F5B4E; --sky: #36457A; --butter: #66572A; --lilac: #4A3E78;
+    --ground: #1F2E2B; --path: #3A3326; --path-line: #8C7642;
+    --night: #221E45; --night-2: #2F2A5A; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1D1929; --glass: rgba(29, 25, 41, .9); --dot: rgba(184, 156, 255, .10);
+  --blob-a: rgba(160, 70, 120, .30); --blob-b: rgba(60, 140, 115, .28); --blob-c: rgba(80, 105, 190, .30); --blob-d: rgba(150, 125, 50, .22);
+  --card: #29233D; --ink: #F1EBFF; --muted: #B3A8C8; --accent: #B79BFF; --accent-soft: #3A3160;
+  --good: #7FE0C5; --meh: #FFBE78; --bad: #FF93B1; --tip: #3A3320; --tip-ink: #FFE6A0;
+  --pink: #6B3C5E; --mint: #2F5B4E; --sky: #36457A; --butter: #66572A; --lilac: #4A3E78;
+  --ground: #1F2E2B; --path: #3A3326; --path-line: #8C7642;
+  --night: #221E45; --night-2: #2F2A5A; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(var(--dot) 1.4px, transparent 1.6px),
+    radial-gradient(60vmax 40vmax at 8% 4%, var(--blob-a), transparent 70%),
+    radial-gradient(50vmax 40vmax at 95% 12%, var(--blob-c), transparent 70%),
+    radial-gradient(55vmax 45vmax at 85% 70%, var(--blob-b), transparent 70%),
+    radial-gradient(50vmax 40vmax at 5% 90%, var(--blob-d), transparent 70%);
+  background-size: 22px 22px, auto, auto, auto, auto;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1.65;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 64px;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.view { max-width: 1120px; margin: 0 auto; display: grid; gap: 36px; min-width: 0; }
+button { font: inherit; color: inherit; }
+button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* 공통 조각 */
+.note-label {
+  justify-self: start; font-family: var(--f-hand); font-size: 1.05rem; font-weight: 700;
+  background: var(--card); border: 2px dashed var(--accent); color: var(--accent); border-radius: 999px; padding: 0 12px;
+}
+.hl { background: linear-gradient(transparent 58%, var(--pink) 58%, var(--pink) 92%, transparent 92%); padding: 0 4px; border-radius: 4px; }
+.lede { margin: 0; color: var(--muted); max-width: 60ch; }
+.stats { display: flex; flex-wrap: wrap; gap: 8px; font-variant-numeric: tabular-nums; }
+.stat { font-size: .9rem; background: var(--card); border: 1.5px solid var(--lilac); border-radius: 999px; padding: 2px 12px; color: var(--muted); }
+.stat b { color: var(--ink); font-weight: 400; font-family: var(--f-display); }
+.sample-note { font-size: .9rem; color: var(--tip-ink); background: var(--tip); border-radius: 14px; padding: 8px 14px; justify-self: start; margin: 0; }
+.pill-btn {
+  font-family: var(--f-display); font-size: 1rem; color: var(--ink); background: var(--card);
+  border: 2px solid var(--ink); border-radius: 999px; padding: 5px 16px; cursor: pointer;
+  box-shadow: 3px 3px 0 var(--ink); transition: transform .12s, box-shadow .12s; white-space: nowrap;
+}
+.pill-btn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
+.pill-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+.pill-btn.pink { background: var(--pink); }
+.wheel { transform-box: fill-box; transform-origin: center; animation: spin 26s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── 1. 입구 ─────────────────────── */
+.gate { min-height: calc(100svh - 92px); align-content: center; justify-items: center; text-align: center; gap: 22px; }
+.gate-art { position: relative; width: min(560px, 100%); display: grid; justify-items: center; }
+.gate-wheel { width: min(230px, 56vw); height: auto; margin-bottom: -78px; overflow: visible; }
+.arch { position: relative; z-index: 1; width: 100%; display: grid; justify-items: center; }
+.bunting { width: 92%; height: 26px; display: block; margin-bottom: -6px; }
+.plate {
+  width: 100%; background: var(--card); border: 2.5px solid var(--ink); border-radius: 28px;
+  padding: 16px clamp(14px, 4vw, 28px) 18px; display: grid; justify-items: center; gap: 6px; box-shadow: 6px 6px 0 var(--lilac);
+}
+.plate .note-label { justify-self: center; }
+.gate h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(2.3rem, 8vw, 3.6rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+.pillars { width: 84%; display: flex; justify-content: space-between; height: 92px; }
+.pillar {
+  width: 30px; height: 100%; border: 2px solid var(--ink); border-top: none; border-radius: 0 0 10px 10px;
+  background: repeating-linear-gradient(180deg, var(--pink) 0 15px, var(--card) 15px 30px);
+}
+.gate .lede { text-align: center; margin-top: -4px; }
+.ticket-btn {
+  display: flex; align-items: stretch; cursor: pointer; background: transparent; border: none; padding: 0;
+  filter: drop-shadow(4px 4px 0 var(--ink));
+}
+.ticket-btn .stub, .ticket-btn .main { background: var(--butter); border: 2.5px solid var(--ink); display: grid; place-items: center; }
+.ticket-btn .stub {
+  font-family: var(--f-hand); font-weight: 700; font-size: .8rem; line-height: 1; padding: 6px 9px; border-right: none;
+  border-radius: 16px 0 0 16px; writing-mode: vertical-rl; letter-spacing: .08em; transition: transform .35s, opacity .35s;
+}
+.ticket-btn .main {
+  font-family: var(--f-display); font-size: 1.55rem; padding: 14px 34px; border-radius: 0 16px 16px 0;
+  border-left: 2.5px dashed var(--ink); background: var(--pink);
+}
+.ticket-btn:hover .main { background: var(--butter); }
+.ticket-btn.torn .stub { transform: translate(-12px, 26px) rotate(-28deg); opacity: 0; }
+.gate-small { margin: 0; font-size: .88rem; color: var(--muted); }
+
+/* ── 2. 지도 ─────────────────────── */
+.map-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 24px; align-items: end; }
+.map-head-text { display: grid; gap: 8px; min-width: 0; }
+.map-head h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(1.9rem, 5vw, 2.6rem); line-height: 1.2; margin: 0; }
+.map-head .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.map-box { min-width: 0; }
+.map { display: block; width: 100%; height: auto; overflow: visible; }
+.map-tall { display: none; }
+.map text { font-family: var(--f-display); fill: var(--ink); }
+.map text.sub { font-family: var(--f-body); fill: var(--muted); }
+.zone { cursor: pointer; outline: none; }
+.zone .lift { transition: transform .2s ease; }
+.zone:hover .lift, .zone:focus-visible .lift { transform: translateY(-6px); }
+.zone:focus-visible .sign-bg { stroke: var(--accent); stroke-width: 4; }
+.course { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.course-btn {
+  text-align: left; cursor: pointer; background: var(--card); border: 2px solid var(--ink); border-radius: 20px;
+  padding: 12px 14px; display: grid; gap: 2px; box-shadow: 4px 4px 0 var(--c); transition: transform .15s; min-width: 0;
+}
+.course-btn:hover { transform: translateY(-2px); }
+.course-btn .c-ride { font-family: var(--f-hand); font-weight: 700; font-size: .98rem; color: var(--accent); }
+.course-btn strong { font-family: var(--f-display); font-weight: 400; font-size: 1.12rem; line-height: 1.3; }
+.course-btn span.c-desc { font-size: .84rem; color: var(--muted); }
+.c-pink { --c: var(--pink); } .c-butter { --c: var(--butter); } .c-sky { --c: var(--sky); } .c-mint { --c: var(--mint); }
+
+/* ── 3. 상세 ─────────────────────── */
+.detail-bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 10px; min-width: 0;
+  background: var(--glass); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border: 2px solid var(--ink); border-radius: 22px; padding: 8px; box-shadow: 4px 4px 0 var(--c);
+}
+.bar-name { min-width: 0; text-align: center; font-family: var(--f-display); font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.detail-bar .bar-btn { justify-self: start; }
+.bar-btn { font-family: var(--f-display); font-size: .98rem; background: var(--card); border: 2px solid var(--ink); border-radius: 14px; padding: 4px 12px; cursor: pointer; white-space: nowrap; }
+.bar-btn.next { background: var(--c); }
+.bar-btn .short { display: none; }
+.section { display: grid; gap: 18px; --c: var(--lilac); min-width: 0; }
+.s-bought { --c: var(--pink); } .s-rule { --c: var(--butter); } .s-tier { --c: var(--sky); } .s-saju { --c: var(--mint); }
+.section-head { display: grid; gap: 6px; }
+.section-head .ride { font-family: var(--f-hand); font-weight: 700; font-size: 1.1rem; color: var(--accent); }
+.section-head h2 {
+  font-family: var(--f-display); font-weight: 400; font-size: clamp(1.8rem, 5vw, 2.4rem); margin: 0; justify-self: start;
+  background: linear-gradient(transparent 55%, var(--c) 55%, var(--c) 92%, transparent 92%); padding: 0 6px; border-radius: 4px; line-height: 1.25;
+}
+.section-head p { margin: 0; color: var(--muted); }
+.title-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.count { font-family: var(--f-hand); font-size: 1.15rem; color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
+.chip-label { font-size: .85rem; color: var(--muted); align-self: center; margin-right: 4px; letter-spacing: .02em; }
+.chip { font-size: .9rem; background: var(--card); border: 1.5px solid var(--lilac); border-radius: 999px; padding: 2px 12px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.next-course {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+  border: 2px dashed var(--lilac); border-radius: 24px; padding: 16px 18px;
+}
+.next-course p { margin: 0; color: var(--muted); }
+.next-course p b { font-family: var(--f-display); font-weight: 400; color: var(--ink); font-size: 1.15rem; }
+
+/* 카드: 높이가 제각각이라 단(column)으로 빈칸 없이 */
+.grid { columns: 3 280px; column-gap: 22px; }
+.grid > .card { break-inside: avoid; margin-bottom: 22px; }
+.card {
+  position: relative; background: var(--card); border: 2px solid var(--ink); border-radius: 22px;
+  padding: 16px 18px 14px; display: grid; gap: 10px; box-shadow: 5px 5px 0 var(--c); min-width: 0;
+  scroll-margin: 100px; transition: transform .15s;
+}
+.card:hover { transform: translateY(-2px) rotate(-.4deg); }
+.card.pulse, .spoiler.pulse { animation: pulse 1.8s ease-out; }
+@keyframes pulse { 30% { box-shadow: 5px 5px 0 var(--c), 0 0 0 9px var(--accent-soft); } }
+.meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 10px; }
+.meta-left { font-size: .8rem; color: var(--muted); letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+.stamp {
+  font-family: var(--f-hand); font-weight: 700; font-size: 1.1rem; line-height: 1.2;
+  border: 3px double currentColor; border-radius: 10px; padding: 1px 9px; transform: rotate(-6deg); white-space: nowrap;
+}
+.stamp.good { color: var(--good); }
+.stamp.meh { color: var(--meh); transform: rotate(4deg); }
+.stamp.bad { color: var(--bad); transform: rotate(-3deg); }
+.card h3 { font-family: var(--f-display); font-weight: 400; font-size: 1.3rem; line-height: 1.3; margin: 0; text-wrap: balance; }
+.card p { margin: 0; }
+.tip { background: var(--tip); color: var(--tip-ink); border-radius: 14px; padding: 9px 12px; font-size: .95rem; }
+.tip b { display: block; font-family: var(--f-hand); font-size: 1.05rem; }
+.foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; }
+.tags { font-size: .8rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 10px; }
+.like { font-family: var(--f-hand); font-size: 1.05rem; font-weight: 700; background: transparent; color: var(--muted); border: 1.5px solid var(--lilac); border-radius: 999px; padding: 0 10px; cursor: pointer; }
+.like[aria-pressed="true"] { color: var(--bad); border-color: var(--bad); background: var(--card); }
+.card.rule { padding-top: 22px; }
+.card.rule::before {
+  content: ""; position: absolute; top: -11px; left: 50%; width: 78px; height: 22px;
+  background: var(--c); opacity: .9; transform: translateX(-50%) rotate(-3deg); border-radius: 4px;
+}
+.card.rule h3 { font-family: var(--f-hand); font-weight: 700; font-size: 1.5rem; }
+.since { font-family: var(--f-hand); font-size: 1rem; font-weight: 700; color: var(--accent); }
+
+/* 시상대 */
+.tier-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 22px; align-items: start; }
+.board { background: var(--card); border: 2px solid var(--ink); border-radius: 22px; padding: 16px 18px; box-shadow: 5px 5px 0 var(--c); display: grid; gap: 12px; min-width: 0; }
+.board h3 { font-family: var(--f-display); font-weight: 400; font-size: 1.3rem; margin: 0; }
+.podium { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; align-items: end; padding-top: 4px; }
+.place { display: grid; gap: 4px; text-align: center; min-width: 0; }
+.place strong { font-weight: 400; font-family: var(--f-display); font-size: 1.02rem; line-height: 1.25; }
+.place .why { font-size: .8rem; color: var(--muted); line-height: 1.35; margin-bottom: 4px; }
+.block { border: 2px solid var(--ink); border-radius: 14px 14px 6px 6px; display: grid; align-content: start; justify-items: center; padding-top: 6px; font-family: var(--f-display); font-size: 1.35rem; line-height: 1.1; color: var(--ink); }
+.block small { font-family: var(--f-hand); font-weight: 700; font-size: 1rem; }
+.block.S { height: 96px; background: var(--pink); }
+.block.A { height: 76px; background: var(--mint); }
+.block.B { height: 60px; background: var(--butter); }
+.crown { font-family: var(--f-hand); font-weight: 700; color: var(--accent); font-size: 1.05rem; line-height: 1; }
+.consolation { display: flex; align-items: center; gap: 10px; border-top: 2px dashed var(--lilac); padding-top: 10px; min-width: 0; }
+.consolation .c-badge { flex: none; font-family: var(--f-hand); font-weight: 700; font-size: .95rem; background: var(--lilac); color: var(--ink); border: 2px solid var(--ink); border-radius: 999px; padding: 0 10px; }
+.consolation div { min-width: 0; font-size: .9rem; color: var(--muted); }
+.consolation strong { font-weight: 400; font-family: var(--f-display); color: var(--ink); margin-right: 6px; }
+
+/* 인생 스포: 밤의 놀이공원 */
+.night {
+  --good: #8FE6CD; --meh: #FFC98A; --bad: #FF9DB8;
+  background:
+    radial-gradient(var(--star) 1px, transparent 1.6px) 0 0 / 36px 36px,
+    radial-gradient(var(--star) 1px, transparent 1.6px) 18px 14px / 36px 36px,
+    var(--night);
+  color: var(--night-ink); border: 2px solid var(--ink); border-radius: 32px;
+  box-shadow: 6px 6px 0 var(--c); padding: 26px clamp(16px, 4vw, 32px) 30px; display: grid; gap: 28px; min-width: 0;
+}
+.t-label { font-family: var(--f-hand); font-weight: 700; font-size: 1.05rem; letter-spacing: .02em; }
+.night-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 20px; align-items: stretch; }
+.ticket { background: var(--gold); color: var(--night); border-radius: 22px; padding: 18px 20px; display: grid; gap: 4px; outline: 2px dashed var(--night); outline-offset: -9px; min-width: 0; align-content: start; }
+.t-hanja { font-family: var(--f-serif); font-weight: 700; font-size: 3.2rem; line-height: 1.1; }
+.ticket strong { font-family: var(--f-display); font-weight: 400; font-size: 1.25rem; }
+.ticket p { margin: 0; font-size: .92rem; }
+.orbs-box { background: var(--night-2); border: 1.5px solid var(--night-line); border-radius: 22px; padding: 16px 18px; display: grid; gap: 12px; min-width: 0; }
+.orbs-box .t-label, .today .t-label { color: var(--gold); }
+.orbs { display: flex; flex-wrap: wrap; justify-content: space-around; align-items: flex-end; gap: 18px 6px; padding-top: 12px; }
+.orb-wrap { display: grid; justify-items: center; gap: 4px; position: relative; }
+.orb { position: relative; width: calc(30px + var(--p) * 1.1px); height: calc(30px + var(--p) * 1.1px); border-radius: 50%; display: grid; place-items: center; border: 2px solid var(--night-ink); color: var(--ink); font-family: var(--f-serif); font-weight: 700; font-size: 1.15rem; }
+.mint { --o: var(--mint); } .pink { --o: var(--pink); } .butter { --o: var(--butter); } .lilac { --o: var(--lilac); } .sky { --o: var(--sky); }
+.orb, .pbar span { background: var(--o); }
+.orb-name { font-size: .85rem; color: var(--night-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.orb-name b { font-weight: 400; font-family: var(--f-display); color: var(--night-ink); font-size: 1rem; }
+/* '나' 표시는 구슬 테두리의 2시 방향에 붙여서 위쪽 '제일 셈'과 겹치지 않게 */
+.me { position: absolute; left: 93%; top: 25%; transform: translate(-35%, -50%); line-height: 1.35; background: var(--gold); color: var(--night); font-family: var(--f-hand); font-weight: 700; font-size: .85rem; border-radius: 999px; padding: 0 7px; }
+.me.top { right: auto; left: 50%; top: -14px; transform: translateX(-50%); white-space: nowrap; background: var(--sky); color: var(--ink); }
+.pbar { display: flex; height: 12px; border-radius: 999px; overflow: hidden; border: 1.5px solid var(--night-ink); }
+.orb-note { margin: 0; font-size: .88rem; color: var(--night-muted); }
+.today { border: 2px dashed var(--night-line); border-radius: 20px; padding: 12px 16px; display: grid; gap: 2px; }
+.today p { margin: 0; }
+.today b { font-weight: 400; font-family: var(--f-display); color: var(--gold); }
+.night-h { font-family: var(--f-display); font-weight: 400; font-size: 1.3rem; margin: 0 0 12px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.night-h span { font-family: var(--f-body); font-size: .88rem; color: var(--night-muted); }
+.cast { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.cast-card { background: var(--night-2); border: 1.5px solid var(--night-line); border-radius: 18px; padding: 12px 14px; display: grid; gap: 2px; min-width: 0; align-content: start; }
+.cast-card strong { font-family: var(--f-display); font-weight: 400; font-size: 1.08rem; }
+.cast-role { font-size: .8rem; color: var(--gold); font-variant-numeric: tabular-nums; }
+.cast-card p { margin: 4px 0 0; font-size: .86rem; color: var(--night-muted); line-height: 1.5; }
+.cast-card.empty { background: transparent; border-style: dashed; grid-column: 1 / -1; }
+.cast-card.empty strong { text-decoration: line-through; text-decoration-color: var(--bad); }
+@media (min-width: 720px) { .cast { grid-template-columns: repeat(3, minmax(0, 1fr)); } .cast-card.empty { grid-column: auto; } }
+@media (min-width: 1000px) { .cast { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.spoilers { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 14px; align-items: start; }
+.spoiler { background: var(--night-2); border: 1.5px solid var(--night-line); border-radius: 20px; padding: 14px 16px; display: grid; gap: 8px; min-width: 0; scroll-margin: 100px; --c: var(--night-line); }
+.spoiler .meta-left { color: var(--night-muted); }
+.src { font-size: .78rem; color: var(--night); background: var(--mint); border-radius: 999px; padding: 0 9px; }
+.said { font-family: var(--f-hand); font-weight: 700; font-size: 1rem; color: var(--gold); margin-bottom: -6px; }
+.spoiler h3 { font-family: var(--f-display); font-weight: 400; font-size: 1.15rem; line-height: 1.4; margin: 0; text-wrap: balance; }
+.extra { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: .9rem; color: var(--night-muted); }
+.extra b { font-family: var(--f-hand); font-weight: 700; font-size: .95rem; color: var(--ink); background: var(--pink); border-radius: 999px; padding: 0 8px; margin-right: 8px; }
+.extra li:nth-child(2) b { background: var(--gold); color: var(--night); }
+.veil {
+  font-family: var(--f-hand); font-weight: 700; font-size: 1.08rem; color: var(--night-ink); cursor: pointer;
+  background: repeating-linear-gradient(-45deg, var(--night-line) 0 8px, transparent 8px 16px);
+  border: 2px dashed var(--night-muted); border-radius: 14px; padding: 8px 12px;
+}
+.veil:hover { border-color: var(--gold); color: var(--gold); }
+.veil.open { background: transparent; border-style: solid; border-color: var(--night-line); color: var(--night-muted); font-size: .98rem; padding: 4px 12px; justify-self: start; order: 1; }
+.reveal .more { font-family: var(--f-display); font-size: 1.08rem; line-height: 1.45; color: var(--night-ink); }
+.spoiler-note { margin: 0; font-size: .95rem; color: var(--night-muted); }
+.reveal { display: grid; gap: 8px; justify-items: start; }
+.reveal p { margin: 0; font-size: .95rem; }
+.real { font-family: var(--f-hand); font-weight: 700; font-size: 1rem; background: var(--gold); color: var(--night); border-radius: 999px; padding: 0 8px; margin-right: 6px; }
+.stamp.pending { color: var(--night-muted); transform: rotate(-2deg); }
+
+/* 점술 텐트 접수처 */
+.saju-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 440px); gap: 20px 32px; align-items: start; }
+.head-hint { font-size: .9rem; }
+.booth {
+  background: var(--card); border: 2px solid var(--ink); border-radius: 24px; padding: 16px 18px;
+  box-shadow: 5px 5px 0 var(--c); display: grid; gap: 12px; min-width: 0;
+}
+.booth-head { display: grid; gap: 2px; }
+.booth-tag { font-family: var(--f-hand); font-weight: 700; font-size: 1rem; color: var(--accent); }
+.booth-head strong { font-family: var(--f-display); font-weight: 400; font-size: 1.25rem; line-height: 1.3; }
+.field { display: grid; gap: 4px; min-width: 0; }
+.field-row { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 10px; }
+.f-label { font-size: .82rem; color: var(--muted); letter-spacing: .02em; }
+.field input {
+  font: inherit; font-size: 1rem; color: var(--ink); background: var(--bg); width: 100%; min-width: 0;
+  border: 2px solid var(--ink); border-radius: 12px; padding: 6px 10px;
+}
+.field input:disabled { opacity: .45; }
+.field input:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.seg-btn { font-family: var(--f-display); font-size: 1rem; background: var(--bg); border: 2px solid var(--ink); border-radius: 12px; padding: 5px 10px; cursor: pointer; }
+.seg-btn[aria-pressed="true"] { background: var(--mint); box-shadow: 2px 2px 0 var(--ink); }
+.check { display: flex; align-items: center; gap: 8px; font-size: .92rem; cursor: pointer; justify-self: start; }
+.check input { width: 18px; height: 18px; accent-color: var(--accent); }
+.f-err { margin: 0; font-size: .88rem; color: var(--bad); }
+.booth-btns { display: flex; flex-wrap: wrap; gap: 10px; }
+.f-note { margin: 0; font-size: .8rem; color: var(--muted); }
+.viewing { margin: 0 0 12px; display: flex; align-items: center; gap: 8px; font-family: var(--f-hand); font-weight: 700; font-size: 1.05rem; color: var(--muted); }
+.viewing .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--lilac); border: 1.5px solid var(--ink); flex: none; }
+.viewing .dot.on { background: var(--mint); }
+#nightWrap { scroll-margin-top: 90px; min-width: 0; }
+.pillars-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 8px; padding-top: 10px; border-top: 2px dashed var(--night); }
+.pcol { display: grid; gap: 4px; justify-items: center; }
+.plab { font-size: .75rem; font-family: var(--f-hand); font-weight: 700; }
+.pch { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--o); color: var(--ink); border: 2px solid var(--night); font-family: var(--f-serif); font-weight: 700; font-size: 1.1rem; }
+.pch.unk { background: transparent; color: var(--night); border-style: dashed; }
+@media (max-width: 860px) { .saju-head { grid-template-columns: 1fr; } }
+@media (max-width: 400px) { .field-row { grid-template-columns: 1fr; } }
+
+/* 운영자와의 케미 */
+.chem { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 18px; align-items: center; background: var(--night-2); border: 1.5px solid var(--night-line); border-radius: 22px; padding: 16px 20px; min-width: 0; }
+.chem.jackpot { border: 2px solid var(--gold); }
+.chem.teaser { grid-template-columns: 1fr; border-style: dashed; background: transparent; }
+.chem.teaser p { margin: 0; color: var(--night-muted); }
+.chem-wheel { width: 140px; height: 140px; }
+.chem-wheel text { font-family: var(--f-display); }
+.chem-body { display: grid; gap: 4px; min-width: 0; }
+.chem-title { font-family: var(--f-display); font-weight: 400; font-size: 1.5rem; color: var(--gold); line-height: 1.2; }
+.chem-score { font-size: .88rem; color: var(--night-muted); font-variant-numeric: tabular-nums; }
+.chem ul { margin: 6px 0 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+.chem li { padding-left: 18px; position: relative; font-size: .95rem; }
+.chem li::before { content: ""; position: absolute; left: 2px; top: .6em; width: 8px; height: 8px; border-radius: 50%; background: var(--mint); }
+@media (max-width: 480px) { .chem { grid-template-columns: 1fr; justify-items: center; text-align: center; } .chem-body { justify-items: center; } .chem ul { text-align: left; } }
+
+.empty-state { text-align: center; padding: 40px 16px; color: var(--muted); font-family: var(--f-hand); font-size: 1.3rem; }
+footer { text-align: center; color: var(--muted); font-size: .9rem; display: grid; gap: 2px; }
+footer .hand { font-family: var(--f-hand); font-size: 1.15rem; }
+.toast {
+  position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 20;
+  background: var(--ink); color: var(--card); font-family: var(--f-display); border-radius: 999px; padding: 8px 18px;
+  max-width: calc(100% - 32px); text-align: center; box-shadow: 3px 3px 0 var(--lilac);
+}
+
+/* 태블릿 */
+@media (max-width: 860px) {
+  .course { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .map-head { grid-template-columns: 1fr; }
+  .map-head .actions { justify-content: flex-start; }
+}
+/* 휴대폰: 세로 지도로 교체 */
+@media (max-width: 640px) {
+  .view { gap: 28px; }
+  .map-wide { display: none; }
+  .map-tall { display: block; max-width: 420px; margin: 0 auto; }
+  .night-top { grid-template-columns: 1fr; }
+  .bar-btn .long { display: none; }
+  .bar-btn .short { display: inline; }
+  .chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-right: 24px;
+    -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent); mask-image: linear-gradient(90deg, #000 88%, transparent); }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip, .chip-label { flex: none; white-space: nowrap; }
+}
+@media (max-width: 560px) {
+  .grid { columns: 1; }
+  .gate-wheel { margin-bottom: -60px; }
+  .pillars { height: 70px; }
+  .ticket-btn .main { font-size: 1.35rem; padding: 12px 26px; }
+  .night { border-radius: 26px; padding: 20px 14px 22px; gap: 24px; }
+  .ticket { padding: 16px 18px; }
+  .t-hanja { font-size: 2.6rem; }
+  .orbs { gap: 22px 2px; padding-top: 16px; justify-content: space-between; }
+  .orb .me { font-size: .72rem; padding: 0 5px; transform: translate(-45%, -60%); }
+  .me.top { top: -20px; font-size: .78rem; }
+  .orb { width: calc(24px + var(--p) * .78px); height: calc(24px + var(--p) * .78px); font-size: .95rem; }
+  .orb-name { font-size: .78rem; }
+  .orb-name b { font-size: .9rem; }
+  .podium { gap: 6px; }
+  .place .why { font-size: .76rem; }
+  .board { padding: 14px; }
+  .course { gap: 10px; }
+  .course-btn { padding: 10px 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wheel, .card.pulse, .spoiler.pulse { animation: none; }
+  .pill-btn, .card, .course-btn, .zone .lift, .ticket-btn .stub { transition: none; }
+  .card:hover, .zone:hover .lift { transform: none; }
+}
+</style>
+</head>
+<body>
+<!-- 1. 입구 -->
+<section class="view gate" id="v-gate" aria-label="입구">
+  <div class="gate-art">
+    <svg class="gate-wheel" viewBox="0 0 140 140" aria-hidden="true" id="gateWheel"></svg>
+    <div class="arch">
+      <svg class="bunting" viewBox="0 0 400 26" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 2 Q200 18 400 2" fill="none" stroke="var(--ink)" stroke-width="2"/>
+        <g stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round">
+          <path d="M20 4 L44 7 L31 24 Z" fill="var(--pink)"/><path d="M64 9 L88 11 L76 26 Z" fill="var(--mint)"/>
+          <path d="M108 12 L132 13 L120 26 Z" fill="var(--butter)"/><path d="M152 14 L176 15 L164 26 Z" fill="var(--sky)"/>
+          <path d="M196 15 L220 15 L208 26 Z" fill="var(--lilac)"/><path d="M240 15 L264 14 L252 26 Z" fill="var(--pink)"/>
+          <path d="M284 13 L308 12 L296 26 Z" fill="var(--mint)"/><path d="M328 11 L352 9 L340 26 Z" fill="var(--butter)"/>
+          <path d="M370 7 L392 4 L382 22 Z" fill="var(--sky)"/>
+        </g>
+      </svg>
+      <div class="plate">
+        <span class="note-label">여행 일지 Vol.1</span>
+        <h1>소소한 <span class="hl">생활 여행</span></h1>
+      </div>
+      <div class="pillars" aria-hidden="true"><span class="pillar"></span><span class="pillar"></span></div>
+    </div>
+  </div>
+  <p class="lede">작은 놀이공원이 문을 열었어요.<br>그럼, 즐거운 시간 되시길 바랍니다!</p>
+  <button class="ticket-btn" id="enterBtn" type="button"><span class="stub">입장권</span><span class="main">입장하기</span></button>
+  <p class="gate-small">입장료 무료 · 자유이용권 한 장 드려요</p>
+</section>
+
+<!-- 2. 지도 -->
+<section class="view" id="v-map" aria-label="놀이공원 지도" hidden>
+  <header class="map-head">
+    <div class="map-head-text">
+      <span class="note-label">소소한 생활 여행 · 안내 지도</span>
+      <h1>어디부터 가볼까요?</h1>
+      <p class="lede">가고 싶은 곳을 눌러보세요. 가운데 관람차를 누르면 아무 데나 내려줘요.</p>
+      <div class="stats" id="stats"></div>
+    </div>
+    <div class="actions">
+      <button class="pill-btn" type="button" data-go="gate">입구로</button>
+      <button class="pill-btn pink" type="button" data-pick="1">아무 데나 데려가줘</button>
+    </div>
+  </header>
+  <div class="map-box" id="mapBox"></div>
+  <footer>
+    <span class="hand">운영자: 비공개 · 운영 시간: 언제나</span>
+    <span>즐거운 시간 되세요!</span>
+  </footer>
+</section>
+
+<!-- 3. 상세 -->
+<section class="view" id="v-detail" aria-live="polite" hidden></section>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+/* ── 여기만 고치면 내용이 바뀌어요 ───────────────────────────── */
+const TAGS = ['덕질할 때', '공부할 때', '편하게 살고 싶을 때', '건강 챙길 때', '돈 아낄 때'];
+
+const RECORDS = [
+  // 질러봤어요: verdict는 good(찐템) / meh(쏘쏘) / bad(텅장 주의), period는 비워둬도 돼요
+  { type: 'bought', title: 'OTT 구독 · 티빙', verdict: 'good', period: '야구 시즌 필수템',
+    note: '야구 보려고 시작했어요. 올해 김도영을 누가 막을 수 있을까요?',
+    tip: '오늘 지겠다 싶으면 역전이라는 망상을 접어요.', tags: ['덕질할 때'] },
+  { type: 'bought', title: '배달앱 구독 · 쿠팡이츠, 배달의민족', verdict: 'bad', period: '두 개 동시 구독 중',
+    note: '배달비를 아끼는 건지, 구독 핑계로 더 쓰는 건지 사실 잘 모르겠어요.',
+    tip: '일단 구독을 해제하고 생각해볼게요.', tags: ['돈 아낄 때', '편하게 살고 싶을 때'] },
+  { type: 'bought', title: '갤럭시 시리즈 · 탭, 워치, 버즈3 프로', verdict: 'good', period: '한 세트로 사용 중',
+    note: '하나씩 사다 보니 어느새 세트가 됐어요. 서로 바로바로 연결되는 게 제일 편해요.',
+    tip: '같은 계정으로 묶어두면 알림, 사진, 메모가 알아서 따라와요.', tags: ['공부할 때', '편하게 살고 싶을 때'] },
+  { type: 'bought', title: '스타벅스 온갖 텀블러', verdict: 'bad', period: '찬장 가득',
+    note: '시즌마다 새로 나오면 또 예뻐 보여요. 막상 매일 쓰는 건 한두 개예요.',
+    tip: '예쁘니까 일단 사고 볼게요. 어떻게든 되겠죠.', tags: ['덕질할 때', '돈 아낄 때'] },
+  { type: 'bought', title: '택시', verdict: 'bad', period: '늦잠 잔 날의 친구',
+    note: '편하긴 진짜 편해요. 그런데 한 달 카드 내역을 보면 깜짝 놀라요.',
+    tip: '5분만 일찍 일어나면 택시 탈 일이 확 줄어요.', tags: ['편하게 살고 싶을 때', '돈 아낄 때'] },
+  { type: 'bought', title: '버블 · 스타쉽 이광수', verdict: 'good', period: '구독 중',
+    note: '거짓말 안 하고 계속 채팅이 쌓여 있어요. 버블은 처음인데 괜찮은 것 같아요.',
+    tipLabel: '한편으로 기대돼요', tip: '언젠가 답장을 받으면 좋을 것 같아요.', tags: ['덕질할 때'] },
+
+  // 이렇게 살아요: 나만의 생활 규칙
+  { type: 'rule', title: '그날 과제는 그날 끝내요', period: '',
+    note: '미루면 다음 날의 내가 두 배로 고생해요.',
+    tip: '다 못 끝내도 제목이랑 목차만이라도 그날 써두세요.', tags: ['공부할 때'] },
+  { type: 'rule', title: '그날 공부는 그날 해요', period: '',
+    note: '하루 밀리면 이틀 치가 되고, 이틀 밀리면 포기하고 싶어져요.',
+    tip: '양을 줄여서라도 0으로 만들지 않는 게 핵심이에요.', tags: ['공부할 때'] },
+  { type: 'rule', title: '늦은 시간에는 잠을 자요', period: '',
+    note: '쓸데없는 생각은 미래의 나에게 좋지 않아요. 충동구매도 대부분 이때 일어나요.',
+    tip: '밤늦게 무언가를 사고 싶어진다면 찬물 한 잔 마시고 자요.', tags: ['건강 챙길 때', '돈 아낄 때'] },
+  { type: 'rule', title: '체력이 된다면 가까운 거리는 걸어요', period: '',
+    note: '택시비도 아끼고, 운동도 되고, 생각 정리도 돼요.',
+    tip: '한두 정거장 거리는 이어폰 끼고 걸어보세요.', tags: ['건강 챙길 때', '돈 아낄 때'] },
+  { type: 'rule', title: '딱 5분만 일찍 일어나요', period: '',
+    note: '5분이 별거 아닌 것 같은데 아침이 훨씬 덜 허둥지둥해요.',
+    tip: '알람을 5분만 당기세요. 10분은 실패해요.', tags: ['편하게 살고 싶을 때', '건강 챙길 때'] },
+
+  // 인생 스포당해봤어요: 사주가 말한 나
+  //   verdict는 good(소름) / meh(반반) / bad(땡) / pending(판정 대기), note = 실제로는 어떤지
+  { type: 'saju', src: '일간 신금', title: '작은 보석 같은 사람이래요. 섬세하고, 은근 자존심이 세대요', verdict: 'pending', note: '', tags: [] },
+  { type: 'saju', src: '편인 둘', title: '생각이 너무 많대요. 대신 남들이 못 보는 걸 보는 촉이 있대요', verdict: 'pending', note: '', tags: [] },
+  { type: 'saju', src: '식신 둘', title: '먹는 것, 만드는 것, 표현하는 걸 좋아하는 아이가 안에 산대요', verdict: 'pending', note: '', tags: [] },
+  { type: 'saju', src: '편인과 식신', title: '하고 싶은 게 떠올라도 생각이 많아서 시작 전에 멈칫한대요', verdict: 'pending', note: '', tags: [] },
+  { type: 'saju', src: '정재 둘', title: '돈은 한 방보다 차곡차곡 모으는 타입이래요', verdict: 'pending', note: '', tags: [] },
+  { type: 'saju', src: '비겁 없음', title: '도움을 잘 안 청하고 혼자 해내려는 타입이래요', verdict: 'pending', note: '', tags: [] },
+  { type: 'saju', src: '자오충', title: '마음속에서 "쉬고 싶다"와 "해야 한다"가 자주 부딪힌대요', verdict: 'pending', note: '', tags: [] },
+  { type: 'saju', src: '한겨울의 신금', title: '추운 계절의 보석이라 따뜻한 사람과 햇볕이 필요하대요', verdict: 'pending', note: '', tags: [] },
+  { type: 'saju', src: '궁합', title: '태양 같은 병화(丙) 일간과 잘 맞는대요', verdict: 'pending', note: '', tags: [],
+    // more와 extra는 펼쳐보기를 눌러야 보여요
+    more: '특히 병오일주와는 하늘도 땅도 합인 천지합이래요',
+    extra: [['찰떡', '병오일주 · 병화 일간'], ['보너스', '2026년이 마침 병오년이에요']] },
+];
+
+// 멋대로 시상해봤어요: S(1등) / A(2등) / B(3등) / C(참가상)
+const TIERS = [
+  { title: '집중 잘 되는 장소', rows: [
+    { tier: 'S', name: '카페', why: '사람 구경도 하며 주위를 환기시켜주는 공간' },
+    { tier: 'A', name: '유레카', why: '사람 구경, 자유로운 자습 공간' },
+    { tier: 'B', name: '집 책상', why: '침대가 저를 이끌어요' },
+    { tier: 'C', name: '침대', why: '누우면 잠들어요' } ] },
+  { title: '계절', rows: [
+    { tier: 'S', name: '겨울', why: '눈 내리는 날을 좋아해요. 낭만 있잖아요' },
+    { tier: 'A', name: '가을', why: '시원하고 선선해요' },
+    { tier: 'B', name: '봄', why: '꽃이 피면 예쁜 것 같아요' },
+    { tier: 'C', name: '여름', why: '덥고 습해요' } ] },
+  { title: '커피', rows: [
+    { tier: 'S', name: '아이스 카라멜 마끼아또', why: '달달하고 맛있어요' },
+    { tier: 'A', name: '콜드브루', why: '끝맛이 정말 깔끔해요' },
+    { tier: 'B', name: '아이스 아메리카노', why: '무난하게 괜찮은 것 같아요' },
+    { tier: 'C', name: '뜨거운 음료 모든 것', why: '차라리 얼어 죽는 편을 택할게요' } ] },
+];
+
+// 인생 스포 머리 부분 (생년월일이 드러나지 않게 원국 여덟 글자는 넣지 않았어요)
+const SAJU = {
+  hero: { hanja: '辛', name: '신금', nick: '작은 보석',
+    desc: '한겨울 물 기운 속에서 태어난 보석이래요. 물에 씻길수록 반짝이지만, 따뜻한 볕이 꼭 필요하대요.' },
+  // p = 비중(%). 천간 10점씩, 지지는 속에 숨은 기운(지장간) 비율대로 나누고, 태어난 달(월지)은 계절 기운이라 30점으로 계산
+  elements: [
+    { k: '목', h: '木', p: 22, c: 'mint' }, { k: '화', h: '火', p: 13, c: 'pink' },
+    { k: '토', h: '土', p: 15, c: 'butter' }, { k: '금', h: '金', p: 10, c: 'lilac', me: true },
+    { k: '수', h: '水', p: 40, c: 'sky' } ],
+  elementsNote: '태어난 달이 한겨울 물의 달이라 계절 기운에 가중치를 주고, 글자 속에 숨은 기운까지 나눠 계산했어요. 물이 40%로 제일 세고, 금은 주인공 혼자라 10%예요.',
+  cast: [
+    { role: '식신', n: 2, nick: '회전목마', job: '먹고 놀고 표현하는 즐거움 담당. 물 기운 40%라 늘 붐벼요' },
+    { role: '정재', n: 2, nick: '매표소', job: '현실 감각, 계획, 차곡차곡 모으기 담당' },
+    { role: '편인', n: 2, nick: '거울 미로', job: '생각이 꼬리를 무는 곳. 직관과 공상 담당' },
+    { role: '편관', n: 1, nick: '자이로드롭', job: '책임감과 버티는 힘 담당. 주로 인생 후반에 개장' },
+    { role: '비겁', n: 0, nick: '2인승 범퍼카', job: '운행 중지. 그래서 혼자 타는 장면이 많대요' } ],
+};
+// 오늘 일진이 일간에게 어떤 기운인지에 따라 바뀌는 운행 안내 (순서: 비겁, 식상, 재성, 관성, 인성)
+const TODAY_G = [
+  { who: '2인승 범퍼카', what: '친구와 동료 기운이 들어오는 날이래요.', tip: '친구한테 먼저 연락해보기.' },
+  { who: '회전목마', what: '말과 표현이 술술 나오는 날이래요.', tip: '맛있는 걸 먹고, 하고 싶은 말은 해보기.' },
+  { who: '매표소', what: '돈과 일이 눈에 잘 들어오는 날이래요.', tip: '장바구니는 사흘 뒤에 다시 보기.' },
+  { who: '자이로드롭', what: '해야 할 일이 나를 부르는 날이래요.', tip: '미뤄둔 답장 하나만 처리해도 충분해요.' },
+  { who: '거울 미로', what: '생각이 깊어지는 날이래요.', tip: '혼자 있는 시간을 꼭 챙기기.' },
+];
+/* ─────────────────────────────────────────────────────────── */
+
+const SECTIONS = [
+  { key: 'bought', name: '질러봤어요', ride: '통장 롤러코스터', desc: '통장이 롤러코스터를 탄 기록', color: 'pink', unit: '기록' },
+  { key: 'rule', name: '이렇게 살아요', ride: '꿀팁 하우스', desc: '지켜보니 좋았던 생활 규칙', color: 'butter', unit: '규칙' },
+  { key: 'tier', name: '멋대로 시상해봤어요', ride: '시상식 무대', desc: '심사위원은 저 혼자예요', color: 'sky', unit: '시상' },
+  { key: 'saju', name: '인생 스포당해봤어요', ride: '밤의 점술 텐트', desc: '사주가 미리 알려준 나, 맞았을까요?', color: 'mint', unit: '쪽지' },
+];
+const STAMP = {
+  bought: { good: '찐템', meh: '쏘쏘', bad: '텅장 주의' },
+  saju: { good: '소름', meh: '반반', bad: '땡', pending: '판정 대기' },
+};
+
+const seq = {};
+RECORDS.forEach((r, i) => {
+  seq[r.type] = (seq[r.type] || 0) + 1;
+  r.no = String(seq[r.type]).padStart(3, '0');
+  r.id = 'rec' + String(i + 1).padStart(3, '0');
+});
+const countOf = k => k === 'tier' ? TIERS.length : RECORDS.filter(r => r.type === k).length;
+
+const state = { view: 'gate', tag: null, likedOnly: false, sajuMode: 'example', guest: null };
+let liked = new Set();
+try { liked = new Set(JSON.parse(localStorage.getItem('lab-liked') || '[]')); } catch (e) {}
+function saveLiked() { try { localStorage.setItem('lab-liked', JSON.stringify([...liked])); } catch (e) {} }
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const $ = id => document.getElementById(id);
+
+/* ── 그림 조각 (지도와 입구에서 같이 써요) ── */
+const WHEEL = `
+  <path d="M70 62 L42 128 M70 62 L98 128" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M52 104 L88 104" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+  <rect x="28" y="126" width="84" height="8" rx="4" fill="var(--lilac)" stroke="var(--ink)" stroke-width="2.6"/>
+  <g class="wheel">
+    <circle cx="70" cy="62" r="46" fill="none" stroke="var(--ink)" stroke-width="3.2"/>
+    <circle cx="70" cy="62" r="32" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="3 5" stroke-linecap="round"/>
+    <g stroke="var(--ink)" stroke-width="2.2" stroke-linecap="round">
+      <path d="M70 16 L70 108"/><path d="M24 62 L116 62"/><path d="M37.5 29.5 L102.5 94.5"/><path d="M102.5 29.5 L37.5 94.5"/>
+    </g>
+    <g stroke="var(--ink)" stroke-width="2.4">
+      <circle cx="70" cy="16" r="9" fill="var(--pink)"/><circle cx="102.5" cy="29.5" r="9" fill="var(--mint)"/>
+      <circle cx="116" cy="62" r="9" fill="var(--sky)"/><circle cx="102.5" cy="94.5" r="9" fill="var(--butter)"/>
+      <circle cx="70" cy="108" r="9" fill="var(--lilac)"/><circle cx="37.5" cy="94.5" r="9" fill="var(--pink)"/>
+      <circle cx="24" cy="62" r="9" fill="var(--mint)"/><circle cx="37.5" cy="29.5" r="9" fill="var(--sky)"/>
+    </g>
+  </g>
+  <circle cx="70" cy="62" r="8" fill="var(--butter)" stroke="var(--ink)" stroke-width="2.8"/>
+  <circle cx="70" cy="62" r="2.6" fill="var(--ink)"/>`;
+
+function star(cx, cy, r) {
+  let d = '';
+  for (let i = 0; i < 10; i++) {
+    const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r;
+    d += (i ? 'L' : 'M') + (cx + Math.cos(a) * rr).toFixed(1) + ' ' + (cy + Math.sin(a) * rr).toFixed(1) + ' ';
+  }
+  return `<path d="${d}Z" fill="var(--gold)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/>`;
+}
+// 각 놀이기구: 가운데(0,0) 기준, 바닥이 y=40 근처
+const DRAW = {
+  bought: () => `
+    <g stroke="var(--ink)" stroke-width="2.2"><path d="M-58 40 L-58 -14 M-30 40 L-30 -30 M0 40 L0 18 M28 40 L28 -26 M56 40 L56 -2"/></g>
+    <path d="M-80 40 C-70 -40 -40 -66 -24 -20 C-12 14 4 40 18 6 C30 -26 44 -60 62 -24 C70 -8 76 16 80 40" fill="none" stroke="var(--ink)" stroke-width="13" stroke-linecap="round"/>
+    <path d="M-80 40 C-70 -40 -40 -66 -24 -20 C-12 14 4 40 18 6 C30 -26 44 -60 62 -24 C70 -8 76 16 80 40" fill="none" stroke="var(--pink)" stroke-width="8" stroke-linecap="round"/>
+    <g transform="translate(-50 -48) rotate(-28)"><rect x="-15" y="-12" width="30" height="16" rx="6" fill="var(--butter)" stroke="var(--ink)" stroke-width="2.4"/>
+      <circle cx="-7" cy="-16" r="4.5" fill="var(--sky)" stroke="var(--ink)" stroke-width="2"/><circle cx="7" cy="-16" r="4.5" fill="var(--mint)" stroke="var(--ink)" stroke-width="2"/></g>
+    <path d="M-92 40 L92 40" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>`,
+  rule: () => `
+    <rect x="-46" y="-18" width="92" height="58" rx="8" fill="var(--card)" stroke="var(--ink)" stroke-width="2.6"/>
+    <path d="M-58 -14 L0 -62 L58 -14 Z" fill="var(--butter)" stroke="var(--ink)" stroke-width="2.6" stroke-linejoin="round"/>
+    <rect x="22" y="-58" width="12" height="20" rx="2" fill="var(--pink)" stroke="var(--ink)" stroke-width="2.2"/>
+    <rect x="-12" y="8" width="24" height="32" rx="7" fill="var(--butter)" stroke="var(--ink)" stroke-width="2.4"/>
+    <circle cx="-29" cy="6" r="9" fill="var(--sky)" stroke="var(--ink)" stroke-width="2.4"/>
+    <circle cx="29" cy="6" r="9" fill="var(--sky)" stroke="var(--ink)" stroke-width="2.4"/>
+    <path d="M-7 -36 C-7 -42 0 -42 0 -36 C0 -42 7 -42 7 -36 C7 -30 0 -26 0 -24 C0 -26 -7 -30 -7 -36 Z" fill="var(--pink)" stroke="var(--ink)" stroke-width="1.8"/>`,
+  tier: () => `
+    <path d="M-72 40 L-72 -16 A72 62 0 0 1 72 -16 L72 40 Z" fill="var(--sky)" stroke="var(--ink)" stroke-width="2.6"/>
+    <path d="M-72 -16 Q-50 0 -36 -40 M72 -16 Q50 0 36 -40" fill="none" stroke="var(--ink)" stroke-width="2" opacity=".5"/>
+    <rect x="-55" y="2" width="35" height="38" rx="4" fill="var(--mint)" stroke="var(--ink)" stroke-width="2.4"/>
+    <rect x="-17.5" y="-16" width="35" height="56" rx="4" fill="var(--pink)" stroke="var(--ink)" stroke-width="2.4"/>
+    <rect x="20" y="14" width="35" height="26" rx="4" fill="var(--butter)" stroke="var(--ink)" stroke-width="2.4"/>
+    ${star(0, -36, 13)}
+    <path d="M-86 40 L86 40" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>`,
+  saju: () => `
+    <circle cx="0" cy="-6" r="70" fill="var(--night)" stroke="var(--ink)" stroke-width="2.6"/>
+    <g fill="var(--gold)"><circle cx="-44" cy="-40" r="2.4"/><circle cx="40" cy="-48" r="2"/><circle cx="-54" cy="0" r="1.8"/><circle cx="52" cy="-6" r="2.4"/><circle cx="-20" cy="-60" r="1.8"/></g>
+    <circle cx="34" cy="-30" r="11" fill="var(--gold)"/><circle cx="39" cy="-34" r="10" fill="var(--night)"/>
+    <path d="M-50 40 L0 -44 L50 40 Z" fill="var(--lilac)" stroke="var(--ink)" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M0 -44 L-17 40 L17 40 Z" fill="var(--card)" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round"/>
+    <path d="M-9 40 Q0 18 9 40 Z" fill="var(--night)"/>
+    <path d="M0 -44 L0 -60" stroke="var(--ink)" stroke-width="2.4"/><path d="M0 -60 L16 -54 L0 -48 Z" fill="var(--pink)" stroke="var(--ink)" stroke-width="2"/>`,
+  gate: () => `
+    <rect x="-48" y="-62" width="17" height="62" rx="5" fill="var(--pink)" stroke="var(--ink)" stroke-width="2.4"/>
+    <rect x="31" y="-62" width="17" height="62" rx="5" fill="var(--pink)" stroke="var(--ink)" stroke-width="2.4"/>
+    <circle cx="-39.5" cy="-90" r="7" fill="var(--butter)" stroke="var(--ink)" stroke-width="2.2"/>
+    <circle cx="39.5" cy="-90" r="7" fill="var(--butter)" stroke="var(--ink)" stroke-width="2.2"/>
+    <rect x="-56" y="-84" width="112" height="30" rx="13" fill="var(--card)" stroke="var(--ink)" stroke-width="2.6"/>
+    <text x="0" y="-63" text-anchor="middle" font-size="18">입구</text>`,
+};
+const tree = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-3" y="6" width="6" height="14" rx="2" fill="var(--ink)"/><circle r="16" fill="var(--mint)" stroke="var(--ink)" stroke-width="2.2"/><circle cx="-5" cy="-5" r="4" fill="var(--card)" opacity=".55"/></g>`;
+const flowers = (pts) => pts.map(([x, y, c]) => `<circle cx="${x}" cy="${y}" r="4" fill="var(--${c})" stroke="var(--ink)" stroke-width="1.4"/>`).join('');
+
+function sign(name, sub, fs, fs2, color) {
+  const w = Math.round(Math.max(name.length * fs * .95, sub.length * fs2 * .9) + fs * 1.3);
+  const h = Math.round(fs * 1.3 + fs2 * 1.4 + fs * .7);
+  return `<g class="sign">
+    <rect x="${-w / 2 + 4}" y="4" width="${w}" height="${h}" rx="${h / 2.4}" fill="var(--${color})" stroke="var(--ink)" stroke-width="2"/>
+    <rect class="sign-bg" x="${-w / 2}" y="0" width="${w}" height="${h}" rx="${h / 2.4}" fill="var(--card)" stroke="var(--ink)" stroke-width="2.4"/>
+    <text x="0" y="${(fs * 1.2).toFixed(1)}" text-anchor="middle" font-size="${fs}">${esc(name)}</text>
+    <text class="sub" x="0" y="${(fs * 1.2 + fs2 * 1.45).toFixed(1)}" text-anchor="middle" font-size="${fs2}">${esc(sub)}</text>
+  </g>`;
+}
+
+const LAYOUTS = [
+  { cls: 'map-wide', w: 1000, h: 660, ground: [24, 24, 952, 600, 64], road: 34, fs: 22, fs2: 15, s: 1, ws: 1.5, gs: 1,
+    pos: { bought: [220, 160], rule: [220, 436], tier: [780, 160], saju: [780, 436], wheel: [500, 236], gate: [500, 640] },
+    paths: ['M500 640 L500 392', 'M500 392 C420 392 300 330 220 200', 'M500 392 C580 392 700 330 780 200', 'M500 392 C420 400 300 420 220 446', 'M500 392 C580 400 700 420 780 446'],
+    plaza: [500, 394, 50],
+    deco: () => tree(80, 90, 1) + tree(372, 110, .9) + tree(628, 110, .9) + tree(920, 92, 1.05) + tree(110, 320, .95) + tree(890, 318, .95) +
+      tree(76, 578, .95) + tree(370, 590, .85) + tree(630, 590, .85) + tree(924, 578, .95) +
+      flowers([[420, 470, 'pink'], [436, 486, 'butter'], [580, 470, 'sky'], [566, 488, 'pink'], [150, 260, 'butter'], [850, 260, 'lilac'], [460, 560, 'mint'], [540, 560, 'butter']]) },
+  { cls: 'map-tall', w: 360, h: 806, ground: [10, 14, 340, 766, 40], road: 24, fs: 14.5, fs2: 11, s: .72, ws: 1.15, gs: .8,
+    pos: { bought: [94, 116], tier: [266, 116], wheel: [180, 302], rule: [94, 552], saju: [266, 552], gate: [180, 780] },
+    paths: ['M180 780 L180 472', 'M180 472 C100 466 46 330 92 150', 'M180 472 C260 466 314 330 268 150', 'M180 472 C140 482 100 512 92 556', 'M180 472 C220 482 260 512 268 556'],
+    plaza: [180, 474, 34],
+    deco: () => tree(180, 198, .7) + tree(34, 250, .7) + tree(326, 250, .7) + tree(40, 690, .75) + tree(320, 690, .75) + tree(114, 720, .6) + tree(246, 720, .6) +
+      flowers([[150, 520, 'pink'], [210, 520, 'butter'], [36, 420, 'sky'], [324, 420, 'pink']]) },
+];
+
+function mapSVG(L) {
+  const [gx, gy, gw, gh, gr] = L.ground;
+  const roads = L.paths.map(d => `<path d="${d}" fill="none" stroke="var(--ink)" stroke-width="${L.road + 4}" stroke-linecap="round"/>`).join('') +
+    L.paths.map(d => `<path d="${d}" fill="none" stroke="var(--path)" stroke-width="${L.road}" stroke-linecap="round"/>`).join('') +
+    `<circle cx="${L.plaza[0]}" cy="${L.plaza[1]}" r="${L.plaza[2] + 2}" fill="var(--ink)"/><circle cx="${L.plaza[0]}" cy="${L.plaza[1]}" r="${L.plaza[2]}" fill="var(--path)"/>` +
+    L.paths.map(d => `<path d="${d}" fill="none" stroke="var(--path-line)" stroke-width="2.4" stroke-dasharray="2 12" stroke-linecap="round"/>`).join('');
+  const zones = SECTIONS.map(sec => {
+    const [x, y] = L.pos[sec.key];
+    const dy = (sec.key === 'saju' ? 76 : 52) * L.s;
+    return `<g class="zone" role="button" tabindex="0" data-go="${sec.key}" aria-label="${sec.ride}, ${sec.name}, ${sec.unit} ${countOf(sec.key)}" transform="translate(${x} ${y})">
+      <g class="lift"><g transform="scale(${L.s})">${DRAW[sec.key]()}</g>
+      <g transform="translate(0 ${dy.toFixed(1)})">${sign(sec.name, `${sec.ride} · ${countOf(sec.key)}`, L.fs, L.fs2, sec.color)}</g></g></g>`;
+  }).join('');
+  const [wx, wy] = L.pos.wheel;
+  const wheel = `<g class="zone" role="button" tabindex="0" data-pick="1" aria-label="관람차, 아무 데나 데려가기" transform="translate(${wx} ${wy})">
+    <g class="lift"><g transform="scale(${L.ws}) translate(-70 -62)">${WHEEL}</g>
+    <g transform="translate(0 ${(78 * L.ws).toFixed(1)})">${sign('관람차', '아무 데나 내려줘요', L.fs, L.fs2, 'lilac')}</g></g></g>`;
+  const [ex, ey] = L.pos.gate;
+  const gate = `<g class="zone" role="button" tabindex="0" data-go="gate" aria-label="입구로 돌아가기" transform="translate(${ex} ${ey}) scale(${L.gs})"><g class="lift">${DRAW.gate()}</g></g>`;
+  return `<svg class="map ${L.cls}" viewBox="0 0 ${L.w} ${L.h}" role="group" aria-label="놀이공원 지도">
+    <rect x="${gx}" y="${gy}" width="${gw}" height="${gh}" rx="${gr}" fill="var(--ground)" stroke="var(--ink)" stroke-width="3"/>
+    ${roads}${L.deco()}${zones}${wheel}${gate}
+  </svg>`;
+}
+
+/* ── 지도 화면 ── */
+function renderMap() {
+  const best = RECORDS.filter(r => r.type === 'bought' && r.verdict === 'good').length;
+  const chill = RECORDS.filter(r => r.type === 'saju' && r.verdict === 'good').length;
+  const pending = RECORDS.filter(r => r.verdict === 'pending').length;
+  $('stats').innerHTML =
+    `<span class="stat">기록 <b>${RECORDS.length + TIERS.length}</b>건</span>` +
+    `<span class="stat">찐템 <b>${best}</b>개</span>` +
+    `<span class="stat">인생 스포 쪽지 <b>${countOf('saju')}</b>장</span>` +
+    `<span class="stat">생활 규칙 <b>${countOf('rule')}</b>개</span>`;
+  $('mapBox').innerHTML = LAYOUTS.map(mapSVG).join('');
+}
+
+/* ── 상세 화면 ── */
+function cardHTML(r) {
+  const isRule = r.type === 'rule';
+  const right = isRule ? (r.period ? `<span class="since">${esc(r.period)}</span>` : '') : `<span class="stamp ${r.verdict}">${STAMP[r.type][r.verdict]}</span>`;
+  const left = isRule ? `규칙 #${r.no}` : `기록 #${r.no}${r.period ? ' · ' + esc(r.period) : ''}`;
+  const on = liked.has(r.id);
+  return `<article class="card${isRule ? ' rule' : ''}" id="${r.id}">
+    <div class="meta"><span class="meta-left">${left}</span>${right}</div>
+    <h3>${esc(r.title)}</h3>
+    <p>${esc(r.note)}</p>
+    <div class="tip"><b>${esc(r.tipLabel || '이렇게 해보세요')}</b>${esc(r.tip)}</div>
+    <div class="foot">
+      <span class="tags">${r.tags.map(t => '<span>#' + esc(t) + '</span>').join('')}</span>
+      <button class="like" type="button" id="like-${r.id}" data-like="${r.id}" aria-pressed="${on}">${on ? '♥ 나도 그래' : '♡ 나도 그래'}</button>
+    </div>
+  </article>`;
+}
+function boardHTML(t) {
+  const by = Object.fromEntries(t.rows.map(r => [r.tier, r]));
+  const place = (tier, rank) => by[tier]
+    ? `<div class="place">${tier === 'S' ? '<span class="crown">★</span>' : ''}<strong>${esc(by[tier].name)}</strong>${by[tier].why ? `<span class="why">${esc(by[tier].why)}</span>` : ''}
+        <div class="block ${tier}">${tier}<small>${rank}등</small></div></div>` : '<div></div>';
+  const c = by.C ? `<div class="consolation"><span class="c-badge">참가상</span><div><strong>${esc(by.C.name)}</strong>${esc(by.C.why)}</div></div>` : '';
+  return `<article class="board"><h3>${esc(t.title)}</h3><div class="podium">${place('A', 2)}${place('S', 1)}${place('B', 3)}</div>${c}</article>`;
+}
+function spoilerHTML(r) {
+  const judged = r.verdict !== 'pending';
+  return `<article class="spoiler" id="${r.id}">
+    <div class="meta"><span class="src">${esc(r.src)}</span>${judged ? `<span class="stamp ${r.verdict}">${STAMP.saju[r.verdict]}</span>` : `<span class="meta-left">쪽지 #${r.no}</span>`}</div>
+    <span class="said">사주 왈</span>
+    <h3>${esc(r.title)}</h3>
+    ${r.more || r.extra ? `<button class="veil" type="button" id="veil-${r.id}" data-veil="${r.id}" aria-expanded="false">펼쳐보기</button>
+    <div class="reveal" hidden>${r.more ? `<p class="more">${esc(r.more)}</p>` : ''}${r.extra ? `<ul class="extra">${r.extra.map(([k, v]) => `<li><b>${esc(k)}</b>${esc(v)}</li>`).join('')}</ul>` : ''}</div>` : ''}
+    ${judged && r.note ? `<p class="spoiler-note">${esc(r.note)}</p>` : ''}
+  </article>`;
+}
+/* ── 사주 계산기 (방문자용) ───────────────────────────────── */
+const STEM_H = '甲乙丙丁戊己庚辛壬癸', STEM_K = '갑을병정무기경신임계';
+const BR_H = '子丑寅卯辰巳午未申酉戌亥', BR_K = '자축인묘진사오미신유술해';
+const EL = [ // 목 화 토 금 수
+  { k: '목', h: '木', c: 'mint' }, { k: '화', h: '火', c: 'pink' }, { k: '토', h: '土', c: 'butter' },
+  { k: '금', h: '金', c: 'lilac' }, { k: '수', h: '水', c: 'sky' } ];
+const stemEl = s => Math.floor(s / 2);
+const BR_EL = [4, 2, 0, 0, 2, 1, 1, 2, 3, 3, 2, 4];
+// 지지 속에 숨은 기운(지장간): [천간 번호, 비율(30일 기준)]
+const HIDDEN = [
+  [[8, 10], [9, 20]], [[9, 9], [7, 3], [5, 18]], [[4, 7], [2, 7], [0, 16]], [[0, 10], [1, 20]],
+  [[1, 9], [9, 3], [4, 18]], [[4, 7], [6, 7], [2, 16]], [[2, 10], [5, 9], [3, 11]], [[3, 9], [1, 3], [5, 18]],
+  [[4, 7], [8, 7], [6, 16]], [[6, 10], [7, 20]], [[7, 9], [3, 3], [4, 18]], [[4, 7], [0, 7], [8, 16]] ];
+const BR_MAIN = [9, 5, 0, 1, 4, 2, 3, 5, 6, 7, 4, 8]; // 지지 본기
+
+// 태양 황경(도). 오차 약 0.01도 = 15분 안팎
+function sunLongitude(ms) {
+  const jd = ms / 86400000 + 2440587.5, T = (jd - 2451545) / 36525, r = Math.PI / 180;
+  const L0 = 280.46646 + 36000.76983 * T + 0.0003032 * T * T;
+  const M = (357.52911 + 35999.05029 * T - 0.0001537 * T * T) * r;
+  const C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(M) + (0.019993 - 0.000101 * T) * Math.sin(2 * M) + 0.000289 * Math.sin(3 * M);
+  const om = (125.04 - 1934.136 * T) * r;
+  return (((L0 + C - 0.00569 - 0.00478 * Math.sin(om)) % 360) + 360) % 360;
+}
+const mod = (a, n) => ((a % n) + n) % n;
+const dayIndex = (y, m, d) => mod(Math.round((Date.UTC(y, m - 1, d) - Date.UTC(1949, 9, 1)) / 86400000), 60);
+
+// y, m, d: 양력 / hh, mm: 한국 시각 (null이면 시간 모름)
+function calcPillars(y, m, d, hh, mm) {
+  const known = hh != null;
+  const utc = Date.UTC(y, m - 1, d, known ? hh : 12, known ? mm : 0) - 9 * 3600000;
+  const lon = sunLongitude(utc);
+  const mi = Math.floor(mod(lon - 315, 360) / 30);              // 0 = 인월
+  const sy = (m <= 2 && mi >= 10) ? y - 1 : y;                  // 입춘 전이면 전년도
+  const ys = mod(sy - 4, 10), yb = mod(sy - 4, 12);
+  const ms = mod((ys % 5) * 2 + 2 + mi, 10), mb = mod(mi + 2, 12);
+  // 한국 표준시는 실제 태양시보다 약 30분 빨라서 30분 당겨서 시를 정해요 (자시 23:30~01:30)
+  let hb = null, hs = null, dd = dayIndex(y, m, d);
+  if (known) {
+    const t = hh * 60 + mm - 30;
+    const tt = mod(t, 1440);
+    if (t >= 23 * 60) dd = mod(dd + 1, 60);                     // 밤 11시(보정 후) 이후는 다음 날 자시
+    hb = Math.floor(mod(tt + 60, 1440) / 120);
+  }
+  const ds = dd % 10, db = dd % 12;
+  if (known) hs = mod((ds % 5) * 2 + hb, 10);
+  return { y: [ys, yb], m: [ms, mb], d: [ds, db], h: known ? [hs, hb] : null, lon };
+}
+
+// 십성 그룹: 0 비겁, 1 식상, 2 재성, 3 관성, 4 인성
+const GROUP = ['비겁', '식상', '재성', '관성', '인성'];
+const TEN = [['비견', '겁재'], ['식신', '상관'], ['편재', '정재'], ['편관', '정관'], ['편인', '정인']];
+const relGroup = (me, el) => mod(el - stemEl(me), 5);
+const tenGod = (me, s) => TEN[relGroup(me, stemEl(s))][(me % 2) === (s % 2) ? 0 : 1];
+
+function analyze(P) {
+  const me = P.d[0];
+  const pts = [0, 0, 0, 0, 0];
+  const stems = [P.y[0], P.m[0], P.d[0]].concat(P.h ? [P.h[0]] : []);
+  stems.forEach(s => pts[stemEl(s)] += 10);
+  const brs = [[P.y[1], 10], [P.m[1], 30], [P.d[1], 10]].concat(P.h ? [[P.h[1], 10]] : []);
+  brs.forEach(([b, w]) => HIDDEN[b].forEach(([s, n]) => pts[stemEl(s)] += w * n / 30));
+  const total = pts.reduce((a, b) => a + b, 0);
+  // 반올림 합이 100이 되도록
+  const raw = pts.map(v => v * 100 / total), fl = raw.map(Math.floor);
+  let left = 100 - fl.reduce((a, b) => a + b, 0);
+  raw.map((v, i) => [v - fl[i], i]).sort((a, b) => b[0] - a[0]).slice(0, left).forEach(([, i]) => fl[i]++);
+  // 십성: 일간 빼고 보이는 천간 + 지지 본기
+  const gods = {};
+  const others = [P.y[0], P.m[0]].concat(P.h ? [P.h[0]] : []).concat([P.y[1], P.m[1], P.d[1]].concat(P.h ? [P.h[1]] : []).map(b => BR_MAIN[b]));
+  others.forEach(s => { const g = tenGod(me, s); gods[g] = (gods[g] || 0) + 1; });
+  const groupN = GROUP.map((_, gi) => TEN[gi].reduce((a, g) => a + (gods[g] || 0), 0));
+  return { me, pct: fl, gods, groupN };
+}
+
+
+/* ── 방문자 사주 풀이 ── */
+const STEM_INFO = [
+  { nick: '큰 나무', line: '곧게 뻗는 큰 나무 같은 사람이래요. 한번 정하면 쭉 밀고 나간대요' },
+  { nick: '꽃과 덩굴', line: '바람에 휘어도 꺾이지 않는 꽃 같은 사람이래요. 부드럽지만 끈질기대요' },
+  { nick: '태양', line: '어디서든 환하게 비추는 태양 같은 사람이래요. 숨기는 게 서툴고 솔직하대요' },
+  { nick: '촛불', line: '가까운 사람을 따뜻하게 밝혀주는 촛불 같은 사람이래요. 섬세하고 다정하대요' },
+  { nick: '큰 산', line: '든든하게 버티는 큰 산 같은 사람이래요. 쉽게 흔들리지 않는대요' },
+  { nick: '텃밭', line: '무엇이든 길러내는 텃밭 같은 사람이래요. 챙겨주는 걸 잘한대요' },
+  { nick: '바위', line: '단단한 바위 같은 사람이래요. 맺고 끊는 게 확실하대요' },
+  { nick: '작은 보석', line: '작은 보석 같은 사람이래요. 섬세하고, 은근 자존심이 세대요' },
+  { nick: '큰 바다', line: '넓고 깊은 바다 같은 사람이래요. 품이 크고 생각이 자유롭대요' },
+  { nick: '이슬비', line: '조용히 스며드는 이슬비 같은 사람이래요. 눈치가 빠르고 감성이 풍부하대요' } ];
+const SEASON = {
+  겨울: { src: '한겨울생', line: '추운 계절에 태어나 따뜻한 사람과 햇볕이 필요하대요', hero: '한겨울에 태어나 따뜻한 볕이 반가운' },
+  봄: { src: '봄생', line: '새싹 돋는 계절에 태어나 새로 시작하는 걸 좋아한대요', hero: '새싹 돋는 봄에 태어난' },
+  여름: { src: '한여름생', line: '더운 계절에 태어나 시원한 물 같은 휴식이 필요하대요', hero: '한여름에 태어나 시원한 물이 반가운' },
+  가을: { src: '가을생', line: '열매 맺는 계절에 태어나 마무리를 잘한대요', hero: '열매 맺는 가을에 태어난' } };
+const seasonOf = b => [0, 1, 11].includes(b) ? '겨울' : b <= 4 ? '봄' : b <= 7 ? '여름' : '가을';
+const STRONG = ['내 고집과 뚝심이 센 편이래요. 남 말보다 내 판단을 믿는대요', '표현하고 만들고 즐기는 에너지가 넘친대요',
+  '현실 감각이 좋고 돈 흐름에 밝대요', '책임감이 강하고 맡은 일은 끝까지 해낸대요', '생각이 깊고 배우는 걸 좋아한대요'];
+const MISSING = ['도움을 잘 안 청하고 혼자 해내려는 타입이래요', '속마음을 잘 안 드러내서 오해받을 때가 있대요',
+  '돈보다 의미나 재미를 따라 움직인대요', '정해진 틀보다 자유로운 게 잘 맞는대요', '고민은 짧게, 일단 해보는 타입이래요'];
+const RIDES = [
+  { nick: '2인승 범퍼카', job: '친구, 동료, 자존감 담당', off: '운행 중지. 그래서 혼자 해내는 장면이 많대요' },
+  { nick: '회전목마', job: '먹고 놀고 표현하는 즐거움 담당', off: '운행 중지. 속마음을 꾹 참는 편이래요' },
+  { nick: '매표소', job: '현실 감각, 계획, 돈 관리 담당', off: '운행 중지. 계산보다 마음이 먼저래요' },
+  { nick: '자이로드롭', job: '책임감, 규칙, 버티는 힘 담당', off: '운행 중지. 틀에 묶이는 걸 싫어한대요' },
+  { nick: '거울 미로', job: '생각, 배움, 직관 담당', off: '운행 중지. 생각보다 몸이 먼저 움직인대요' } ];
+const hasBatchim = w => { const c = w.charCodeAt(w.length - 1) - 0xAC00; return c >= 0 && c <= 11171 && c % 28 !== 0; };
+const stemName = x => STEM_K[x] + EL[stemEl(x)].k;
+
+function todayFor(me, groupN) {
+  const d = new Date(), i = dayIndex(d.getFullYear(), d.getMonth() + 1, d.getDate());
+  const g = relGroup(me, stemEl(i % 10)), t = TODAY_G[g];
+  return { day: '오늘은 ' + STEM_K[i % 10] + BR_K[i % 12] + '일', who: t.who,
+    msg: groupN[g] === 0 ? '평소엔 운행 중지인데 오늘은 임시 운행이래요. ' + t.tip : t.what + ' ' + t.tip };
+}
+
+function guestReading(g) {
+  const [y, m, d] = g.date.split('-').map(Number);
+  const [hh, mm] = g.noTime ? [null, null] : g.time.split(':').map(Number);
+  const P = calcPillars(y, m, d, hh, mm), A = analyze(P), me = A.me, info = STEM_INFO[me];
+  const sea = seasonOf(P.m[1]), S = SEASON[sea];
+  const elements = EL.map((e, i) => ({ ...e, p: A.pct[i], me: i === stemEl(me) }));
+  const maxI = A.pct.indexOf(Math.max(...A.pct));
+  const self = A.pct[stemEl(me)] + A.pct[mod(stemEl(me) - 1, 5)];
+  const strong = self >= 50;
+  const notes = [];
+  const add = (src, title, more) => notes.push({ id: 'g' + (notes.length + 1), no: String(notes.length + 1).padStart(3, '0'), src, title, verdict: 'pending', ...more });
+  add('일간 ' + stemName(me), info.line);
+  add(`제일 센 기운 · ${EL[maxI].k} ${A.pct[maxI]}%`, STRONG[relGroup(me, maxI)]);
+  const miss = [0, 1, 2, 3, 4].find(i => A.groupN[i] === 0);
+  if (miss != null) add(GROUP[miss] + ' 없음', MISSING[miss]);
+  else {
+    const minI = A.pct.indexOf(Math.min(...A.pct));
+    add(`제일 약한 기운 · ${EL[minI].k} ${A.pct[minI]}%`, `다섯 기운이 고루 있는 편이래요. 그중 ${EL[minI].k} 기운을 조금 채워주면 좋대요`);
+  }
+  add(`${strong ? '신강' : '신약'} · 내 편 기운 ${self}%`, strong
+    ? '기운이 튼튼해서 밀고 나가는 힘이 있대요. 대신 쉬는 법을 배워야 한대요'
+    : '혼자 버티기보다 좋은 사람과 환경을 곁에 두면 더 빛난대요');
+  add(S.src, S.line);
+  // 여기부터는 사주 안의 조합이 있을 때만 붙는 쪽지예요. 조합이 많을수록 늘어나고, 궁합 포함 최대 9장
+  const G = A.gods, N = A.groupN, has = t => (G[t] || 0) > 0;
+  const stems = [P.y[0], P.m[0], P.d[0]].concat(P.h ? [P.h[0]] : []);
+  const brs = [P.y[1], P.m[1], P.d[1]].concat(P.h ? [P.h[1]] : []);
+  const meet = [], combo = [], many = [];
+  const clash = brs.find(b => brs.includes(mod(b + 6, 12)));
+  if (clash != null) {
+    const [a1, a2] = [clash, mod(clash + 6, 12)].sort((x, z) => x - z);
+    meet.push([BR_K[a1] + BR_K[a2] + '충', '마음속에서 서로 다른 두 목소리가 자주 부딪힌대요. 대신 변화에는 강하대요']);
+  }
+  const bh = brs.find(b => brs.includes(mod(1 - b, 12)) && mod(1 - b, 12) !== b);
+  if (bh != null) {
+    const [a1, a2] = [bh, mod(1 - bh, 12)].sort((x, z) => x - z);
+    meet.push([BR_K[a1] + BR_K[a2] + '합', '주변 사람과 잘 어울리고 한번 맺은 인연이 오래간대요']);
+  }
+  const sh = stems.find(x => stems.includes(mod(x + 5, 10)));
+  if (sh != null) {
+    const [a1, a2] = [sh, mod(sh + 5, 10)].sort((x, z) => x - z);
+    meet.push([STEM_K[a1] + STEM_K[a2] + '합', '마음이 끌리는 쪽으로 잘 묶이는 편이래요. 정이 많대요']);
+  }
+  if (has('편인') && has('식신')) combo.push(['편인과 식신', '하고 싶은 게 떠올라도 생각이 많아서 시작 전에 멈칫한대요']);
+  else if (N[4] && N[1]) combo.push(['인성과 식상', '배운 걸 내 말로 풀어내는 걸 잘한대요']);
+  if (N[1] && N[2]) combo.push(['식상과 재성', '재주가 돈으로 이어지는 구조래요. 좋아하는 걸 일로 만들기 좋대요']);
+  if (N[3] && N[4]) combo.push(['관성과 인성', '책임감과 배움이 서로 돕는 구조래요. 맡은 자리에서 인정받기 좋대요']);
+  if (N[2] && N[3]) combo.push(['재성과 관성', '현실 감각과 책임감이 같이 있어서 믿음직하대요']);
+  if (has('상관') && has('정관')) combo.push(['상관과 정관', '할 말은 하는 편이라 윗사람과 부딪힐 때가 있대요']);
+  if (N[0] >= 2 && N[2]) combo.push(['비겁과 재성', '사람 챙기느라 지갑이 자주 열린대요']);
+  const MANY = { 비견: '나와 닮은 사람들과 함께할 때 힘이 난대요', 겁재: '승부욕이 있어서 지는 걸 싫어한대요',
+    식신: '먹는 것, 만드는 것, 표현하는 걸 좋아하는 아이가 안에 산대요', 상관: '말솜씨와 재치가 좋아서 분위기를 잘 띄운대요',
+    편재: '스케일이 크고 사람을 잘 모은대요', 정재: '돈은 한 방보다 차곡차곡 모으는 타입이래요',
+    편관: '압박 속에서 오히려 강해지는 타입이래요', 정관: '규칙과 약속을 잘 지키는 반듯한 타입이래요',
+    편인: '생각이 너무 많대요. 대신 남들이 못 보는 걸 보는 촉이 있대요', 정인: '배우는 걸 좋아하고 사람들에게 아낌받는대요' };
+  const NUM = ['', '하나', '둘', '셋', '넷', '다섯', '여섯', '일곱'];
+  Object.keys(G).filter(t => G[t] >= 2).sort((x, z) => G[z] - G[x]).forEach(t => many.push([`${t} ${NUM[G[t]] || G[t]}`, MANY[t]]));
+  // 세 묶음에서 번갈아 하나씩 골라 다양하게
+  const pools = [many, combo, meet];
+  for (let round = 0; notes.length < 8 && pools.some(q => q.length); round++) {
+    const q = pools[round % 3];
+    if (q.length) { const [src, title] = q.shift(); add(src, title); }
+  }
+  const ps = mod(me + 5, 10), pb = mod(1 - P.d[1], 12), pill = STEM_K[ps] + BR_K[pb];
+  const now = new Date().getFullYear();
+  let Y = now; while (mod(Y - 4, 10) !== ps || mod(Y - 4, 12) !== pb) Y++;
+  add('궁합', `${STEM_INFO[ps].nick} 같은 ${stemName(ps)}(${STEM_H[ps]}) 일간과 잘 맞는대요`, {
+    more: `특히 ${pill}일주와는 하늘도 땅도 합인 천지합이래요`,
+    extra: [['찰떡', `${pill}일주 · ${stemName(ps)} 일간`], ['보너스', Y === now ? `${Y}년이 마침 ${pill}년이에요` : `다음 찰떡의 해는 ${Y}년, ${pill}년이래요`]] });
+  const castOrder = [1, 2, 4, 3, 0];
+  const cast = castOrder.map(gi => {
+    const n = A.groupN[gi], R = RIDES[gi];
+    const label = n ? TEN[gi].filter(t => A.gods[t]).map(t => `${t} ${A.gods[t]}`).join(' · ') : GROUP[gi] + ' × 0';
+    return { label, nick: R.nick, job: n ? R.job + (n >= 3 ? '. 늘 붐벼요' : '') : R.off, empty: !n };
+  });
+  const when = `${y}년 ${m}월 ${d}일${g.noTime ? '' : ' ' + g.time}`;
+  return {
+    mode: 'guest', label: '손님의 자유이용권', viewing: `${when}에 태어난 손님의 사주예요${g.noTime ? ' · 시간 모름' : ''}`,
+    hero: { hanja: STEM_H[me], name: stemName(me), nick: info.nick,
+      desc: `${S.hero} ${info.nick}${hasBatchim(info.nick) ? '이' : ''}래요. ${strong ? '기운이 튼튼한 편이래요.' : '주변 기운이 큰 편이래요.'}` },
+    pillars: [['시', P.h], ['일', P.d], ['월', P.m], ['년', P.y]],
+    elements, today: todayFor(me, A.groupN), cast, notes, chem: chemistry(P, A),
+    elementsNote: `태어난 달이 ${sea}의 ${BR_K[P.m[1]]}월이라 계절 기운에 가중치를 주고, 글자 속에 숨은 기운까지 나눠 계산했어요. ${EL[maxI].k} 기운이 ${A.pct[maxI]}%로 제일 세요.` +
+      (g.noTime ? ' 태어난 시간을 몰라서 세 기둥으로만 계산했어요.' : ''),
+  };
+}
+
+function exampleReading() {
+  return {
+    mode: 'example', label: '자유이용권 소지자', viewing: '예시 · 이 놀이공원 운영자의 사주예요',
+    hero: SAJU.hero, pillars: null, elements: SAJU.elements, elementsNote: SAJU.elementsNote,
+    today: todayFor(7, [0, 2, 2, 1, 2]),
+    cast: SAJU.cast.map(c => ({ label: `${c.role} × ${c.n}`, nick: c.nick, job: c.job, empty: !c.n })),
+    notes: RECORDS.filter(r => r.type === 'saju'),
+  };
+}
+
+
+/* ── 운영자와의 케미 궁합 (성별 없이 보는 사람 대 사람 궁합) ──
+   운영자 사주는 여덟 글자를 통째로 넣지 않고, 궁합에 필요한 것만 넣었어요 */
+const OP = { stem: 7, branch: 7, pct: [22, 13, 15, 10, 40] }; // 신금 일간, 미토 일지, 오행 비중
+function chemistry(P, A) {
+  const g = P.d[0], gb = P.d[1], reasons = [];
+  let score = 3;
+  const push = (pt, text) => { score += pt; reasons.push({ pt, text }); };
+  const ge = stemEl(g), oe = stemEl(OP.stem);
+  if (g === mod(OP.stem + 5, 10)) push(3, '일간끼리 서로 끌어당기는 합이에요');
+  else if (g === OP.stem) push(1, '둘 다 신금이라 서로를 거울처럼 알아봐요');
+  else if (ge === oe) push(1, '같은 금 기운이라 말이 잘 통해요');
+  else if (mod(oe - ge, 5) === 1) push(2, '손님이 운영자를 든든하게 받쳐주는 사이예요');
+  else if (mod(ge - oe, 5) === 1) push(2, '운영자가 손님을 챙겨주는 사이예요');
+  else if (mod(oe - ge, 5) === 2) push(0, '손님이 운영자를 단련시키는 사이예요. 적당한 긴장감이 있어요');
+  else push(0, '운영자가 손님을 다듬어주는 사이예요. 가끔은 잔소리가 될 수도 있어요');
+  if (gb === mod(1 - OP.branch, 12)) push(2, '일지가 합이라 같이 있으면 편해요');
+  else if (gb === mod(OP.branch + 6, 12)) push(-1, '일지가 부딪혀서 가끔 티격태격해요');
+  else if (gb === OP.branch) push(1, '일지가 같아서 생활 리듬이 비슷해요');
+  else if (mod(gb - OP.branch, 4) === 0) push(1, '일지가 삼합이라 같은 방향을 봐요');
+  if (A.pct[3] >= 20) push(1, '운영자에게 부족한 금 기운을 손님이 채워줘요');
+  if (A.pct[1] >= 25) push(1, '한겨울생 운영자에게 손님의 불 기운이 따뜻한 볕이 돼요');
+  const weak = A.pct.indexOf(Math.min(...A.pct));
+  if (OP.pct[weak] >= 20) push(1, `손님에게 부족한 ${EL[weak].k} 기운을 운영자가 채워줘요`);
+  const jackpot = g === 2 && gb === 6;
+  score = jackpot ? 8 : Math.max(1, Math.min(8, score));
+  const title = jackpot ? '찰떡 당첨!' : score >= 6 ? '환상의 케미' : score >= 4 ? '좋은 동행' : score >= 2 ? '티격태격 케미' : '반대라서 끌리는 사이';
+  reasons.sort((a, b) => b.pt - a.pt);
+  const shown = reasons.filter(r => r.pt > 0).slice(0, 3).concat(reasons.filter(r => r.pt < 0).slice(0, 1));
+  return { score, title, jackpot, reasons: (shown.length ? shown : reasons.slice(0, 1)).map(r => r.text) };
+}
+function chemWheel(score) {
+  const cols = ['pink', 'mint', 'sky', 'butter', 'lilac', 'pink', 'mint', 'sky'];
+  const cab = cols.map((c, i) => {
+    const a = (-90 + i * 45) * Math.PI / 180, x = (60 + Math.cos(a) * 42).toFixed(1), y = (60 + Math.sin(a) * 42).toFixed(1);
+    return i < score ? `<circle cx="${x}" cy="${y}" r="10" fill="var(--${c})" stroke="var(--night-ink)" stroke-width="2"/>`
+      : `<circle cx="${x}" cy="${y}" r="9" fill="none" stroke="var(--night-muted)" stroke-width="1.6" stroke-dasharray="3 3"/>`;
+  }).join('');
+  const spokes = [0, 45, 90, 135].map(d => { const a = d * Math.PI / 180, dx = Math.cos(a) * 42, dy = Math.sin(a) * 42;
+    return `<path d="M${(60 - dx).toFixed(1)} ${(60 - dy).toFixed(1)} L${(60 + dx).toFixed(1)} ${(60 + dy).toFixed(1)}"/>`; }).join('');
+  return `<svg class="chem-wheel" viewBox="0 0 120 120" role="img" aria-label="관람차 8칸 중 ${score}칸에 불이 켜졌어요">
+    <circle cx="60" cy="60" r="42" fill="none" stroke="var(--night-ink)" stroke-width="2.4"/>
+    <g stroke="var(--night-line)" stroke-width="2">${spokes}</g>${cab}
+    <circle cx="60" cy="60" r="12" fill="var(--gold)" stroke="var(--night-ink)" stroke-width="2"/>
+    <text x="60" y="65" text-anchor="middle" font-size="14" fill="var(--night)">${score}</text></svg>`;
+}
+function chemHTML(R) {
+  if (R.mode !== 'guest') return `<div><h3 class="night-h">운영자와의 케미<span>성별 없이 보는 사람 대 사람 궁합이에요</span></h3>
+    <div class="chem teaser"><p>접수처에 생년월일을 넣으면 손님과 운영자의 케미를 관람차 칸으로 알려드려요.</p></div></div>`;
+  const C = R.chem;
+  return `<div><h3 class="night-h">운영자와의 케미<span>성별 없이 보는 사람 대 사람 궁합이에요</span></h3>
+    <div class="chem${C.jackpot ? ' jackpot' : ''}">${chemWheel(C.score)}
+      <div class="chem-body"><strong class="chem-title">${esc(C.title)}</strong>
+        <span class="chem-score">관람차 8칸 중 ${C.score}칸에 불이 켜졌어요</span>
+        <ul>${C.reasons.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div></div></div>`;
+}
+
+function pillarsHTML(P) {
+  return `<div class="pillars-row">${P.map(([lab, x]) => `<div class="pcol"><span class="plab">${lab}</span>${x
+    ? `<span class="pch ${EL[stemEl(x[0])].c}">${STEM_H[x[0]]}</span><span class="pch ${EL[BR_EL[x[1]]].c}">${BR_H[x[1]]}</span>`
+    : '<span class="pch unk">?</span><span class="pch unk">?</span>'}</div>`).join('')}</div>`;
+}
+
+function sajuPanelHTML(R) {
+  const t = R.today, h = R.hero;
+  const maxP = Math.max(...R.elements.map(e => e.p));
+  return `<div class="night">
+    <div class="night-top">
+      <div class="ticket"><span class="t-label">${esc(R.label)}</span><span class="t-hanja">${h.hanja}</span>
+        <strong>${esc(h.name)}, ${esc(h.nick)}</strong><p>${esc(h.desc)}</p>${R.pillars ? pillarsHTML(R.pillars) : ''}</div>
+      <div class="orbs-box"><span class="t-label">다섯 가지 기운</span>
+        <div class="orbs">${R.elements.map(e => `<div class="orb-wrap"><span class="orb ${e.c}" style="--p:${e.p}">${e.h}${e.me ? '<span class="me">나</span>' : ''}</span>
+          <span class="orb-name">${e.k} <b>${e.p}%</b></span>${e.p === maxP ? '<span class="me top">제일 셈</span>' : ''}</div>`).join('')}</div>
+        <div class="pbar" aria-hidden="true">${R.elements.map(e => `<span class="${e.c}" style="width:${e.p}%"></span>`).join('')}</div>
+        <p class="orb-note">${esc(R.elementsNote)}</p></div>
+    </div>
+    <div class="today"><span class="t-label">오늘의 운행 안내</span>
+      <p><b>${t.day}</b> · 오늘 제일 붐비는 곳은 <b>${esc(t.who)}</b>. ${esc(t.msg)}</p></div>
+    <div><h3 class="night-h">내 안의 놀이기구<span>사주 속 성향을 놀이기구로 바꿔봤어요</span></h3>
+      <div class="cast">${R.cast.map(c => `<div class="cast-card${c.empty ? ' empty' : ''}"><span class="cast-role">${esc(c.label)}</span>
+        <strong>${esc(c.nick)}</strong><p>${esc(c.job)}</p></div>`).join('')}</div></div>
+    <div><h3 class="night-h">미리 뽑아본 쪽지<span>${R.mode === 'guest' ? '사주 속 조합이 많을수록 쪽지가 늘어나요 · 최대 9장' : '사주가 미리 귀띔해준 이야기들'}</span></h3>
+      <div class="spoilers">${R.notes.map(spoilerHTML).join('')}</div></div>
+    ${chemHTML(R)}
+  </div>`;
+}
+
+function currentReading() {
+  if (state.sajuMode === 'guest' && state.guest) { try { return guestReading(state.guest); } catch (e) { state.sajuMode = 'example'; } }
+  return exampleReading();
+}
+function nightHTML() {
+  const R = currentReading();
+  return `<p class="viewing"><span class="dot${R.mode === 'guest' ? ' on' : ''}"></span>${esc(R.viewing)}</p>${sajuPanelHTML(R)}`;
+}
+function boothHTML() {
+  const g = state.guest || {};
+  return `<form class="booth" id="sajuForm" novalidate>
+    <div class="booth-head"><span class="booth-tag">점술 텐트 접수처</span><strong>내 사주도 스포 받아볼래요</strong></div>
+    <div class="field-row">
+      <label class="field" for="bDate"><span class="f-label">생년월일 (양력)</span><input type="date" id="bDate" min="1900-01-01" max="2100-12-31" value="${esc(g.date || '')}"></label>
+      <label class="field" for="bTime"><span class="f-label">태어난 시간</span><input type="time" id="bTime" value="${esc(g.time || '')}"${g.noTime ? ' disabled' : ''}></label>
+    </div>
+    <label class="check" for="bNoTime"><input type="checkbox" id="bNoTime"${g.noTime ? ' checked' : ''}> 태어난 시간을 몰라요</label>
+    <p class="f-err" id="fErr" role="alert" hidden></p>
+    <div class="booth-btns">
+      <button type="submit" class="pill-btn pink" id="sajuGo">스포 받기</button>
+      <button type="button" class="pill-btn" id="sajuExample" data-example="1">예시 보기</button>
+    </div>
+    <p class="f-note">입력한 정보는 이 화면 안에서만 계산하고, 어디에도 저장하거나 보내지 않아요.</p>
+  </form>`;
+}
+
+function headHTML(s, key) {
+  const n = key === 'saju' ? currentReading().notes.length : countOf(key);
+  return `<div class="section-head"><span class="ride">${s.ride}</span><div class="title-row"><h2>${s.name}</h2><span class="count" id="headCount">${n}${key === 'saju' ? '장' : '건'}</span></div><p>${s.desc}</p>${key === 'saju' ? '<p class="head-hint">들어오자마자 보이는 건 운영자의 사주 예시예요. 접수처에 생년월일을 넣으면 내 사주로 바뀌어요.</p>' : ''}</div>`;
+}
+
+function renderDetail(key) {
+  const i = SECTIONS.findIndex(s => s.key === key), s = SECTIONS[i];
+  let body = '';
+  if (key === 'bought' || key === 'rule') {
+    const all = RECORDS.filter(r => r.type === key);
+    const tags = TAGS.filter(t => all.some(r => r.tags.includes(t)));
+    const list = all.filter(r => (!state.tag || r.tags.includes(state.tag)) && (!state.likedOnly || liked.has(r.id)));
+    body = `<div class="chips"><span class="chip-label">이럴 때 보세요</span>` +
+      tags.map((t, j) => `<button class="chip" type="button" id="chip-${key}-${j}" data-tag="${esc(t)}" aria-pressed="${state.tag === t}">${t}</button>`).join('') +
+      `<button class="chip" type="button" id="chip-${key}-liked" data-liked="1" aria-pressed="${state.likedOnly}">♥ 공감한 것만</button></div>` +
+      (list.length ? `<div class="grid">${list.map(cardHTML).join('')}</div>`
+        : `<p class="empty-state">${state.likedOnly ? '아직 공감한 기록이 없어요. 카드의 "나도 그래"를 눌러보세요.' : '이 조건에 맞는 곳은 아직 안 가봤어요.'}</p>`);
+  } else if (key === 'tier') {
+    body = `<div class="tier-grid">${TIERS.map(boardHTML).join('')}</div>`;
+  } else {
+    body = `<div id="nightWrap">${nightHTML()}</div>`;
+  }
+  $('v-detail').className = `view section s-${key}`;
+  $('v-detail').innerHTML = `
+    <div class="detail-bar"><button class="bar-btn" type="button" data-go="map">← 지도</button><span class="bar-name">${s.ride}</span><span aria-hidden="true"></span></div>
+    ${key === 'saju' ? `<div class="saju-head">${headHTML(s, key)}${boothHTML()}</div>` : headHTML(s, key)}
+    ${body}
+    <div class="next-course">
+      <p><b>${s.ride}</b> 구경 끝! 다른 놀이기구도 타러 가볼까요?</p><button class="pill-btn" type="button" data-go="map">지도로 돌아가기</button>
+    </div>`;
+}
+
+/* ── 화면 전환 ── */
+function go(view, opts = {}) {
+  if (SECTIONS.some(s => s.key === view) && state.view !== view && !opts.keepFilter) { state.tag = null; state.likedOnly = false; }
+  state.view = view;
+  $('v-gate').hidden = view !== 'gate';
+  $('v-map').hidden = view !== 'map';
+  $('v-detail').hidden = view === 'gate' || view === 'map';
+  if (view === 'map') renderMap();
+  else if (view !== 'gate') renderDetail(view);
+  if (!opts.keepScroll) window.scrollTo(0, 0);
+}
+
+function pickRandom() {
+  const pool = RECORDS.filter(r => r.verdict !== 'bad');
+  const r = pool[Math.floor(Math.random() * pool.length)];
+  if (r.type === 'saju') state.sajuMode = 'example';
+  go(r.type);
+  const el = $(r.id);
+  if (el) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    requestAnimationFrame(() => {
+      el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+      el.classList.add('pulse');
+    });
+  }
+  const t = $('toast');
+  t.textContent = `관람차가 내려준 곳: ${r.type === 'saju' ? '쪽지 #' + r.no : r.title}`;
+  t.hidden = false;
+  clearTimeout(pickRandom.timer);
+  pickRandom.timer = setTimeout(() => { t.hidden = true; }, 2600);
+}
+
+document.addEventListener('click', e => {
+  const z = e.target.closest('[data-go],[data-pick],[data-veil],[data-tag],[data-liked],[data-like],[data-example]');
+  if (!z) return;
+  if (z.dataset.pick) return pickRandom();
+  if (z.dataset.example) { state.sajuMode = 'example'; return showReading(); }
+  if (z.dataset.go) return go(z.dataset.go);
+  if (z.dataset.veil) {
+    const rv = $(z.dataset.veil).querySelector('.reveal'), open = rv.hidden;
+    rv.hidden = !open;
+    z.setAttribute('aria-expanded', open);
+    z.classList.toggle('open', open);
+    z.textContent = open ? '다시 접기' : '펼쳐보기';
+    return;
+  }
+  if (z.dataset.tag) { state.tag = state.tag === z.dataset.tag ? null : z.dataset.tag; return go(state.view, { keepFilter: true, keepScroll: true }); }
+  if (z.dataset.liked) { state.likedOnly = !state.likedOnly; return go(state.view, { keepFilter: true, keepScroll: true }); }
+  if (z.dataset.like) {
+    const id = z.dataset.like;
+    liked.has(id) ? liked.delete(id) : liked.add(id);
+    saveLiked();
+    if (state.likedOnly) return go(state.view, { keepFilter: true, keepScroll: true });
+    const on = liked.has(id); z.setAttribute('aria-pressed', on); z.textContent = on ? '♥ 나도 그래' : '♡ 나도 그래';
+  }
+});
+function showReading() {
+  $('nightWrap').innerHTML = nightHTML();
+  $('headCount').textContent = currentReading().notes.length + '장';
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  $('nightWrap').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+}
+document.addEventListener('submit', e => {
+  if (e.target.id !== 'sajuForm') return;
+  e.preventDefault();
+  const err = $('fErr'), date = $('bDate').value, time = $('bTime').value, noTime = $('bNoTime').checked;
+  const fail = msg => { err.textContent = msg; err.hidden = false; };
+  if (!date) return fail('생년월일을 입력해주세요.');
+  const y = +date.slice(0, 4);
+  if (y < 1900 || y > 2100) return fail('1900년부터 2100년 사이의 날짜로 입력해주세요.');
+  if (!noTime && !time) return fail('태어난 시간을 입력하거나 "태어난 시간을 몰라요"를 체크해주세요.');
+  err.hidden = true;
+  state.guest = { date, time, noTime };
+  state.sajuMode = 'guest';
+  showReading();
+});
+document.addEventListener('change', e => {
+  if (e.target.id === 'bNoTime') { $('bTime').disabled = e.target.checked; $('fErr').hidden = true; }
+});
+document.addEventListener('input', e => { if (e.target.closest && e.target.closest('#sajuForm')) $('fErr').hidden = true; });
+// 지도 위 놀이기구는 키보드로도 들어갈 수 있게
+document.addEventListener('keydown', e => {
+  const z = e.target.closest && e.target.closest('.zone');
+  if (z && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); z.dispatchEvent(new MouseEvent('click', { bubbles: true })); }
+});
+
+$('gateWheel').innerHTML = WHEEL;
+$('enterBtn').addEventListener('click', () => {
+  const btn = $('enterBtn');
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return go('map');
+  btn.classList.add('torn');
+  setTimeout(() => { btn.classList.remove('torn'); go('map'); }, 380);
+});
+
+// 링크 끝에 #map, #bought, #rule, #tier, #saju 를 붙이면 그 화면부터 열려요
+const start = (location.hash || '').slice(1);
+if (start === 'map' || SECTIONS.some(s => s.key === start)) go(start);
+</script>
+
+</body>
+</html>
